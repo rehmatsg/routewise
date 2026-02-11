@@ -4,7 +4,7 @@ const teamMembers = [
   "Kirill Pavlov",
   "Simon Shu",
   "Jared Fong",
-  "Chetas Parekh",
+  "Pavnoor Singh Grewal",
   "Rehmat Gill",
 ];
 
