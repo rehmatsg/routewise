@@ -9,6 +9,7 @@ export function Hero() {
           src="/images/hero-road.jpg"
           alt="Scenic highway winding through mountains at sunset"
           fill
+          sizes="100vw"
           className="object-cover"
           priority
         />

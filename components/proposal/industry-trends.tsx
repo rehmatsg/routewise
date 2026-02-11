@@ -59,6 +59,7 @@ export function IndustryTrends() {
                   src={trend.image || "/placeholder.svg"}
                   alt={trend.imageAlt}
                   fill
+                  sizes="(max-width: 768px) 100vw, 320px"
                   className="object-cover"
                 />
               </div>

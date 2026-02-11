@@ -20,6 +20,7 @@ export function TargetUsers() {
                 src="/images/persona-traveler.jpg"
                 alt="Tech-savvy traveler using phone near an EV on a scenic road"
                 fill
+                sizes="(max-width: 768px) 100vw, 50vw"
                 className="object-cover"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-card to-transparent" />
@@ -50,6 +51,7 @@ export function TargetUsers() {
                 src="/images/ev-charging.jpg"
                 alt="Electric vehicle at a scenic charging station"
                 fill
+                sizes="(max-width: 768px) 100vw, 50vw"
                 className="object-cover"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-card to-transparent" />
