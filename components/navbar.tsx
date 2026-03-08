@@ -32,6 +32,12 @@ export function Navbar() {
           >
             User Research
           </Link>
+          <Link
+            href="/concept-design-report"
+            className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
+          >
+            Concept Design Report
+          </Link>
           <a
             href="#features"
             className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
@@ -72,6 +78,13 @@ export function Navbar() {
               onClick={() => setMobileOpen(false)}
             >
               User Research
+            </Link>
+            <Link
+              href="/concept-design-report"
+              className="text-sm font-medium text-muted-foreground"
+              onClick={() => setMobileOpen(false)}
+            >
+              Concept Design Report
             </Link>
             <a
               href="#features"
