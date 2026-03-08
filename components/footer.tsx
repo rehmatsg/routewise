@@ -20,6 +20,18 @@ export function Footer() {
           >
             Proposal
           </Link>
+          <Link
+            href="/user-research"
+            className="text-sm text-muted-foreground transition-colors hover:text-foreground"
+          >
+            User Research
+          </Link>
+          <Link
+            href="/concept-design-report"
+            className="text-sm text-muted-foreground transition-colors hover:text-foreground"
+          >
+            Concept Design Report
+          </Link>
           <a
             href="#features"
             className="text-sm text-muted-foreground transition-colors hover:text-foreground"
