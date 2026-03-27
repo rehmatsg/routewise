@@ -4,6 +4,8 @@ import { useState } from 'react'
 import { useChat } from '@ai-sdk/react'
 import { DefaultChatTransport, UIMessage } from 'ai'
 import { ArrowUp, RotateCcw, Pencil, Check, X, Square } from 'lucide-react'
+import { Streamdown } from 'streamdown'
+import 'streamdown/styles.css'
 import { Button } from '@/components/ui/button'
 import {
   PromptInput,
@@ -172,13 +174,14 @@ export default function ChatPage() {
                 ) : (
                   <div className="max-w-[80%] flex flex-col gap-1">
                     <Message>
-                      <MessageContent className="bg-transparent p-0 text-sm leading-relaxed">
-                        <p className="whitespace-pre-wrap">
+                      <MessageContent className="bg-transparent p-0 text-sm leading-relaxed prose prose-sm max-w-none prose-p:my-1 prose-headings:mt-3 prose-headings:mb-1">
+                        <Streamdown
+                          animated={{ animation: 'blurIn', duration: 200, easing: 'ease-out' }}
+                          isAnimating={isStreaming}
+                          caret={isStreaming ? 'block' : undefined}
+                        >
                           {text}
-                          {isStreaming && (
-                            <span className="inline-block w-0.5 h-4 bg-foreground ml-0.5 animate-pulse align-text-bottom" />
-                          )}
-                        </p>
+                        </Streamdown>
                       </MessageContent>
                     </Message>
                     {!isLoading && (
