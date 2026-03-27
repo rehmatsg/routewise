@@ -137,31 +137,6 @@ export function Hero() {
           </h1>
 
           <TripForm />
-
-          <div className="mt-14 grid grid-cols-3 gap-6 border-t border-border pt-8">
-            <div>
-              <p className="font-sans text-2xl font-bold text-foreground">
-                $214B
-              </p>
-              <p className="mt-1 text-xs text-muted-foreground">
-                Driving vacation market
-              </p>
-            </div>
-            <div>
-              <p className="font-sans text-2xl font-bold text-foreground">
-                11.8%
-              </p>
-              <p className="mt-1 text-xs text-muted-foreground">
-                US EV market share 2026
-              </p>
-            </div>
-            <div>
-              <p className="font-sans text-2xl font-bold text-foreground">0</p>
-              <p className="mt-1 text-xs text-muted-foreground">
-                Apps that do it all
-              </p>
-            </div>
-          </div>
         </div>
 
         {/* Globe */}
