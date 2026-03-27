@@ -1,6 +1,7 @@
 'use client'
 
-import { useState } from 'react'
+import { Suspense, useState, useEffect, useRef } from 'react'
+import { useSearchParams } from 'next/navigation'
 import { useChat } from '@ai-sdk/react'
 import { DefaultChatTransport, UIMessage } from 'ai'
 import { ArrowUp, RotateCcw, Pencil, Check, X, Square } from 'lucide-react'
@@ -24,7 +25,6 @@ import {
   ChatContainerContent,
   ChatContainerScrollAnchor,
 } from '@/components/prompt-kit/chat-container'
-import { TripStartState } from '@/components/chat/trip-start-state'
 
 function getMessageText(message: UIMessage): string {
   return (
@@ -35,14 +35,26 @@ function getMessageText(message: UIMessage): string {
   )
 }
 
-export default function ChatPage() {
+function ChatPageInner() {
+  const searchParams = useSearchParams()
   const [input, setInput] = useState('')
   const [editingId, setEditingId] = useState<string | null>(null)
   const [editText, setEditText] = useState('')
+  const didSendStarterRef = useRef(false)
 
   const { messages, sendMessage, status, setMessages, stop } = useChat({
     transport: new DefaultChatTransport({ api: '/api/chat' }),
   })
+
+  // Auto-send message from landing page query param
+  useEffect(() => {
+    if (didSendStarterRef.current) return
+    const message = searchParams.get('message')
+    if (message) {
+      didSendStarterRef.current = true
+      sendMessage({ text: decodeURIComponent(message) })
+    }
+  }, [searchParams, sendMessage])
 
   const isLoading = status === 'streaming' || status === 'submitted'
   const isEmpty = messages.length === 0
@@ -51,10 +63,6 @@ export default function ChatPage() {
     if (!input.trim() || isLoading) return
     sendMessage({ text: input })
     setInput('')
-  }
-
-  const handleTripSubmit = (from: string, to: string) => {
-    sendMessage({ text: `Help me plan a trip from ${from} to ${to}` })
   }
 
   const handleEdit = (message: UIMessage) => {
@@ -93,10 +101,12 @@ export default function ChatPage() {
     <div className="flex flex-col h-screen bg-background font-sans">
       {/* Messages */}
       <ChatContainerRoot className="flex-1 min-h-0">
-        <ChatContainerContent className="relative max-w-3xl mx-auto w-full px-4 py-6 space-y-6 h-full">
+        <ChatContainerContent className="max-w-3xl mx-auto w-full px-4 py-6 space-y-6">
           {isEmpty && (
-            <div className="absolute inset-0">
-              <TripStartState onSubmit={handleTripSubmit} />
+            <div className="flex items-center justify-center min-h-[60vh]">
+              <p className="text-2xl font-semibold text-foreground tracking-tight">
+                Where to?
+              </p>
             </div>
           )}
 
@@ -207,8 +217,7 @@ export default function ChatPage() {
         <ChatContainerScrollAnchor />
       </ChatContainerRoot>
 
-      {/* Input area — only shown when conversation is active */}
-      {!isEmpty && (
+      {/* Input area */}
       <div className="shrink-0 px-4 pb-6 pt-2 max-w-3xl mx-auto w-full">
 
         <PromptInput
@@ -245,7 +254,14 @@ export default function ChatPage() {
           </PromptInputActions>
         </PromptInput>
       </div>
-      )}
     </div>
+  )
+}
+
+export default function ChatPage() {
+  return (
+    <Suspense>
+      <ChatPageInner />
+    </Suspense>
   )
 }

@@ -1,8 +1,9 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
+import { useRouter } from "next/navigation";
 import createGlobe from "cobe";
-import { ArrowRight, Sparkles } from "lucide-react";
+import { ArrowRight, MapPin, Navigation, Sparkles } from "lucide-react";
 
 function Globe() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -62,6 +63,62 @@ function Globe() {
   );
 }
 
+function TripForm() {
+  const router = useRouter();
+  const [from, setFrom] = useState("");
+  const [to, setTo] = useState("");
+
+  const canSubmit = from.trim().length > 0 && to.trim().length > 0;
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!canSubmit) return;
+    const prompt = encodeURIComponent(`Help me plan a trip from ${from.trim()} to ${to.trim()}`);
+    router.push(`/chat?message=${prompt}`);
+  };
+
+  return (
+    <form onSubmit={handleSubmit} className="mt-10 w-full max-w-md">
+      <div className="flex flex-col rounded-xl border border-border bg-card shadow-sm overflow-hidden">
+        {/* Start At */}
+        <div className="flex items-center gap-3 px-4 py-3.5">
+          <Navigation className="h-4 w-4 shrink-0 text-muted-foreground" />
+          <input
+            type="text"
+            value={from}
+            onChange={(e) => setFrom(e.target.value)}
+            placeholder="Start at..."
+            className="flex-1 bg-transparent text-sm text-foreground placeholder:text-muted-foreground outline-none"
+          />
+        </div>
+
+        {/* Divider */}
+        <div className="mx-4 h-px bg-border" />
+
+        {/* Destination */}
+        <div className="flex items-center gap-3 px-4 py-3.5">
+          <MapPin className="h-4 w-4 shrink-0 text-muted-foreground" />
+          <input
+            type="text"
+            value={to}
+            onChange={(e) => setTo(e.target.value)}
+            placeholder="Destination..."
+            className="flex-1 bg-transparent text-sm text-foreground placeholder:text-muted-foreground outline-none"
+          />
+          <button
+            type="submit"
+            disabled={!canSubmit}
+            aria-label="Plan trip"
+            className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-primary text-primary-foreground transition-opacity hover:opacity-80 disabled:opacity-25 disabled:cursor-not-allowed"
+          >
+            <ArrowRight className="h-4 w-4" />
+          </button>
+        </div>
+      </div>
+    </form>
+  );
+}
+
 export function Hero() {
   return (
     <section className="relative flex min-h-screen items-center overflow-hidden bg-background pt-20">
@@ -79,26 +136,7 @@ export function Hero() {
             Road trips, planned by AI
           </h1>
 
-          <p className="mt-6 max-w-lg text-pretty text-lg leading-relaxed text-muted-foreground">
-            Scenic routes, EV charging, curated dining, and overnight stays —
-            one intelligent itinerary, zero spreadsheets.
-          </p>
-
-          <div className="mt-10 flex flex-col items-start gap-4 sm:flex-row">
-            <a
-              href="#waitlist"
-              className="inline-flex h-11 items-center gap-2 rounded-lg bg-primary px-6 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90"
-            >
-              Get Early Access
-              <ArrowRight className="h-4 w-4" />
-            </a>
-            <a
-              href="/proposal"
-              className="inline-flex h-11 items-center gap-2 rounded-lg border border-border bg-card px-6 text-sm font-semibold text-foreground transition-colors hover:bg-secondary"
-            >
-              Read the Proposal
-            </a>
-          </div>
+          <TripForm />
 
           <div className="mt-14 grid grid-cols-3 gap-6 border-t border-border pt-8">
             <div>
