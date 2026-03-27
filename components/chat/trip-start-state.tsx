@@ -1,9 +1,9 @@
-"use client"
+'use client'
 
-import { useEffect, useRef, useState } from "react"
-import createGlobe from "cobe"
-import { MapPin, Navigation, ArrowRight } from "lucide-react"
-import { cn } from "@/lib/utils"
+import { useEffect, useRef, useState } from 'react'
+import createGlobe from 'cobe'
+import { MapPin, Navigation, ArrowRight } from 'lucide-react'
+import { cn } from '@/lib/utils'
 
 function Globe() {
   const canvasRef = useRef<HTMLCanvasElement>(null)
@@ -57,7 +57,7 @@ function Globe() {
     <canvas
       ref={canvasRef}
       className="aspect-square w-full"
-      style={{ contain: "layout paint size" }}
+      style={{ contain: 'layout paint size' }}
     />
   )
 }
@@ -67,8 +67,8 @@ type TripStartStateProps = {
 }
 
 export function TripStartState({ onSubmit }: TripStartStateProps) {
-  const [from, setFrom] = useState("")
-  const [to, setTo] = useState("")
+  const [from, setFrom] = useState('')
+  const [to, setTo] = useState('')
 
   const canSubmit = from.trim().length > 0 && to.trim().length > 0
 
@@ -79,7 +79,7 @@ export function TripStartState({ onSubmit }: TripStartStateProps) {
   }
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter" && canSubmit) {
+    if (e.key === 'Enter' && canSubmit) {
       e.preventDefault()
       onSubmit(from.trim(), to.trim())
     }
@@ -87,7 +87,6 @@ export function TripStartState({ onSubmit }: TripStartStateProps) {
 
   return (
     <div className="relative flex items-center justify-center w-full h-full">
-      {/* Globe fills the whole area */}
       <div
         className="absolute inset-0 flex items-center justify-center pointer-events-none select-none"
         aria-hidden="true"
@@ -97,13 +96,11 @@ export function TripStartState({ onSubmit }: TripStartStateProps) {
         </div>
       </div>
 
-      {/* Foreground card */}
       <div className="relative z-10 w-full max-w-sm px-4">
         <form
           onSubmit={handleSubmit}
           className="w-full rounded-2xl border border-border bg-background/90 backdrop-blur-sm shadow-sm overflow-hidden"
         >
-          {/* Start At */}
           <div className="flex items-center gap-3 px-4 py-3.5">
             <Navigation className="h-4 w-4 shrink-0 text-muted-foreground" />
             <input
@@ -114,16 +111,14 @@ export function TripStartState({ onSubmit }: TripStartStateProps) {
               placeholder="Start at..."
               autoComplete="off"
               className={cn(
-                "flex-1 min-w-0 bg-transparent text-sm text-foreground placeholder:text-muted-foreground/60",
-                "outline-none border-none focus:ring-0 leading-snug"
+                'flex-1 min-w-0 bg-transparent text-sm text-foreground placeholder:text-muted-foreground/60',
+                'outline-none border-none focus:ring-0 leading-snug'
               )}
             />
           </div>
 
-          {/* Divider */}
           <div className="h-px bg-border ml-11" />
 
-          {/* Destination */}
           <div className="flex items-center gap-3 px-4 py-3.5">
             <MapPin className="h-4 w-4 shrink-0 text-muted-foreground" />
             <input
@@ -134,8 +129,8 @@ export function TripStartState({ onSubmit }: TripStartStateProps) {
               placeholder="Destination..."
               autoComplete="off"
               className={cn(
-                "flex-1 min-w-0 bg-transparent text-sm text-foreground placeholder:text-muted-foreground/60",
-                "outline-none border-none focus:ring-0 leading-snug"
+                'flex-1 min-w-0 bg-transparent text-sm text-foreground placeholder:text-muted-foreground/60',
+                'outline-none border-none focus:ring-0 leading-snug'
               )}
             />
             {canSubmit && (
