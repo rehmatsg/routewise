@@ -1,54 +1,78 @@
 'use client'
 
-import { useState, useRef, useEffect } from 'react'
+import { useState } from 'react'
 import { useChat } from '@ai-sdk/react'
 import { DefaultChatTransport, UIMessage } from 'ai'
-import { Send, RotateCcw, Pencil, Check, X } from 'lucide-react'
+import { ArrowUp, RotateCcw, Pencil, Check, X, Square } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import {
+  PromptInput,
+  PromptInputTextarea,
+  PromptInputActions,
+  PromptInputAction,
+} from '@/components/prompt-kit/prompt-input'
+import { PromptSuggestion } from '@/components/prompt-kit/prompt-suggestion'
+import {
+  Message,
+  MessageContent,
+  MessageActions,
+  MessageAction,
+} from '@/components/prompt-kit/message'
+import {
+  ChatContainerRoot,
+  ChatContainerContent,
+  ChatContainerScrollAnchor,
+} from '@/components/prompt-kit/chat-container'
+
+const SUGGESTIONS = [
+  'Plan a road trip from NYC to LA',
+  'Best scenic routes in the Pacific Northwest',
+  'EV-friendly road trip tips',
+  'Hidden gems along Route 66',
+]
+
+function getMessageText(message: UIMessage): string {
+  return (
+    message.parts
+      ?.filter((p): p is { type: 'text'; text: string } => p.type === 'text')
+      .map((p) => p.text)
+      .join('') || ''
+  )
+}
 
 export default function ChatPage() {
   const [input, setInput] = useState('')
   const [editingId, setEditingId] = useState<string | null>(null)
   const [editText, setEditText] = useState('')
-  const messagesEndRef = useRef<HTMLDivElement>(null)
 
-  const { messages, sendMessage, status, setMessages } = useChat({
+  const { messages, sendMessage, status, setMessages, stop } = useChat({
     transport: new DefaultChatTransport({ api: '/api/chat' }),
   })
 
   const isLoading = status === 'streaming' || status === 'submitted'
+  const isEmpty = messages.length === 0
 
-  useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
-  }, [messages])
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
+  const handleSubmit = () => {
     if (!input.trim() || isLoading) return
     sendMessage({ text: input })
     setInput('')
   }
 
+  const handleSuggestion = (text: string) => {
+    sendMessage({ text })
+  }
+
   const handleEdit = (message: UIMessage) => {
-    const text = message.parts
-      ?.filter((p): p is { type: 'text'; text: string } => p.type === 'text')
-      .map((p) => p.text)
-      .join('') || ''
     setEditingId(message.id)
-    setEditText(text)
+    setEditText(getMessageText(message))
   }
 
   const submitEdit = () => {
     if (!editingId || !editText.trim()) return
-    
     const messageIndex = messages.findIndex((m) => m.id === editingId)
     if (messageIndex === -1) return
-
-    // Truncate history to before the edited message
-    const truncatedMessages = messages.slice(0, messageIndex)
-    setMessages(truncatedMessages)
+    setMessages(messages.slice(0, messageIndex))
     setEditingId(null)
-    
-    // Send the edited message
     sendMessage({ text: editText })
     setEditText('')
   }
@@ -59,147 +83,194 @@ export default function ChatPage() {
   }
 
   const regenerate = (messageIndex: number) => {
-    // Find the last user message before this assistant message
     const userMessage = messages
       .slice(0, messageIndex)
       .reverse()
       .find((m) => m.role === 'user')
-    
     if (!userMessage) return
-
-    const userText = userMessage.parts
-      ?.filter((p): p is { type: 'text'; text: string } => p.type === 'text')
-      .map((p) => p.text)
-      .join('') || ''
-
-    // Truncate to before the user message that triggered this response
+    const userText = getMessageText(userMessage)
     const userIndex = messages.findIndex((m) => m.id === userMessage.id)
-    const truncatedMessages = messages.slice(0, userIndex)
-    setMessages(truncatedMessages)
-    
-    // Re-send the user message
+    setMessages(messages.slice(0, userIndex))
     sendMessage({ text: userText })
   }
 
-  const getMessageText = (message: UIMessage): string => {
-    return message.parts
-      ?.filter((p): p is { type: 'text'; text: string } => p.type === 'text')
-      .map((p) => p.text)
-      .join('') || ''
-  }
-
   return (
-    <div className="flex flex-col h-screen bg-background">
-      {/* Messages area */}
-      <div className="flex-1 overflow-y-auto">
-        <div className="max-w-3xl mx-auto px-4 py-8">
-          {messages.length === 0 && (
-            <div className="flex items-center justify-center h-full min-h-[60vh]">
-              <p className="text-muted-foreground text-lg">Start a conversation</p>
+    <div className="flex flex-col h-screen bg-background font-sans">
+      {/* Header */}
+      <div className="flex items-center justify-center h-14 border-b border-border shrink-0">
+        <span className="text-sm font-medium text-foreground">GPT-5.4</span>
+      </div>
+
+      {/* Messages */}
+      <ChatContainerRoot className="flex-1 min-h-0">
+        <ChatContainerContent className="max-w-3xl mx-auto w-full px-4 py-6 space-y-6">
+          {isEmpty && (
+            <div className="flex items-center justify-center min-h-[40vh]">
+              <p className="text-2xl font-semibold text-foreground tracking-tight">
+                What can I help with?
+              </p>
             </div>
           )}
 
-          {messages.map((message, index) => (
-            <div
-              key={message.id}
-              className={`mb-6 ${message.role === 'user' ? 'flex justify-end' : ''}`}
-            >
-              {message.role === 'user' ? (
-                <div className="max-w-[85%]">
-                  {editingId === message.id ? (
-                    <div className="flex flex-col gap-2">
-                      <textarea
-                        value={editText}
-                        onChange={(e) => setEditText(e.target.value)}
-                        className="w-full p-3 rounded-2xl border border-border bg-card text-foreground resize-none focus:outline-none focus:ring-1 focus:ring-foreground"
-                        rows={3}
-                        autoFocus
-                      />
-                      <div className="flex gap-2 justify-end">
-                        <button
-                          onClick={cancelEdit}
-                          className="p-2 rounded-full hover:bg-muted transition-colors"
+          {messages.map((message, index) => {
+            const text = getMessageText(message)
+            const isUser = message.role === 'user'
+            const isLastMessage = index === messages.length - 1
+            const isStreaming = isLoading && isLastMessage && !isUser
+
+            return (
+              <div
+                key={message.id}
+                className={`flex ${isUser ? 'justify-end' : 'justify-start'} group`}
+              >
+                {isUser ? (
+                  <div className="max-w-[80%] flex flex-col items-end gap-1">
+                    {editingId === message.id ? (
+                      <div className="flex flex-col gap-2 w-full">
+                        <PromptInput
+                          value={editText}
+                          onValueChange={setEditText}
+                          onSubmit={submitEdit}
+                          className="bg-muted border-border"
                         >
-                          <X className="h-4 w-4" />
-                        </button>
-                        <button
-                          onClick={submitEdit}
-                          className="p-2 rounded-full bg-foreground text-background hover:opacity-80 transition-opacity"
-                        >
-                          <Check className="h-4 w-4" />
-                        </button>
+                          <PromptInputTextarea
+                            placeholder="Edit message..."
+                            autoFocus
+                          />
+                          <PromptInputActions className="justify-end pt-1">
+                            <PromptInputAction tooltip="Cancel">
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                className="h-8 w-8 rounded-full"
+                                onClick={cancelEdit}
+                              >
+                                <X className="h-4 w-4" />
+                              </Button>
+                            </PromptInputAction>
+                            <PromptInputAction tooltip="Send">
+                              <Button
+                                size="icon"
+                                className="h-8 w-8 rounded-full"
+                                onClick={submitEdit}
+                                disabled={!editText.trim()}
+                              >
+                                <Check className="h-4 w-4" />
+                              </Button>
+                            </PromptInputAction>
+                          </PromptInputActions>
+                        </PromptInput>
                       </div>
-                    </div>
-                  ) : (
-                    <div className="group flex items-start gap-2">
-                      <button
-                        onClick={() => handleEdit(message)}
-                        className="opacity-0 group-hover:opacity-100 p-1.5 rounded-full hover:bg-muted transition-all mt-2"
-                      >
-                        <Pencil className="h-3.5 w-3.5 text-muted-foreground" />
-                      </button>
-                      <div className="bg-muted px-4 py-3 rounded-2xl">
-                        <p className="text-foreground whitespace-pre-wrap">
-                          {getMessageText(message)}
-                        </p>
-                      </div>
-                    </div>
-                  )}
-                </div>
-              ) : (
-                <div className="max-w-[85%] group">
-                  <div className="bg-card border border-border px-4 py-3 rounded-2xl">
-                    <p className="text-foreground whitespace-pre-wrap">
-                      {getMessageText(message)}
-                      {status === 'streaming' && index === messages.length - 1 && (
-                        <span className="inline-block w-1.5 h-4 bg-foreground ml-0.5 animate-pulse" />
-                      )}
-                    </p>
+                    ) : (
+                      <>
+                        <Message>
+                          <MessageContent className="bg-muted rounded-3xl px-4 py-3 text-sm leading-relaxed">
+                            <p className="whitespace-pre-wrap">{text}</p>
+                          </MessageContent>
+                        </Message>
+                        <MessageActions className="opacity-0 group-hover:opacity-100 transition-opacity">
+                          <MessageAction tooltip="Edit">
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className="h-7 w-7 rounded-full"
+                              onClick={() => handleEdit(message)}
+                            >
+                              <Pencil className="h-3.5 w-3.5" />
+                            </Button>
+                          </MessageAction>
+                        </MessageActions>
+                      </>
+                    )}
                   </div>
-                  {!isLoading && (
-                    <button
-                      onClick={() => regenerate(index)}
-                      className="opacity-0 group-hover:opacity-100 mt-2 p-1.5 rounded-full hover:bg-muted transition-all flex items-center gap-1.5 text-xs text-muted-foreground"
-                    >
-                      <RotateCcw className="h-3.5 w-3.5" />
-                      Regenerate
-                    </button>
-                  )}
-                </div>
-              )}
-            </div>
-          ))}
-          <div ref={messagesEndRef} />
-        </div>
-      </div>
+                ) : (
+                  <div className="max-w-[80%] flex flex-col gap-1">
+                    <Message>
+                      <MessageContent className="bg-transparent p-0 text-sm leading-relaxed">
+                        <p className="whitespace-pre-wrap">
+                          {text}
+                          {isStreaming && (
+                            <span className="inline-block w-0.5 h-4 bg-foreground ml-0.5 animate-pulse align-text-bottom" />
+                          )}
+                        </p>
+                      </MessageContent>
+                    </Message>
+                    {!isLoading && (
+                      <MessageActions className="opacity-0 group-hover:opacity-100 transition-opacity">
+                        <MessageAction tooltip="Regenerate">
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-7 w-7 rounded-full"
+                            onClick={() => regenerate(index)}
+                          >
+                            <RotateCcw className="h-3.5 w-3.5" />
+                          </Button>
+                        </MessageAction>
+                      </MessageActions>
+                    )}
+                  </div>
+                )}
+              </div>
+            )
+          })}
+        </ChatContainerContent>
+        <ChatContainerScrollAnchor />
+      </ChatContainerRoot>
 
       {/* Input area */}
-      <div className="border-t border-border bg-background">
-        <form onSubmit={handleSubmit} className="max-w-3xl mx-auto px-4 py-4">
-          <div className="flex items-end gap-3 bg-card border border-border rounded-2xl px-4 py-3">
-            <textarea
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter' && !e.shiftKey) {
-                  e.preventDefault()
-                  handleSubmit(e)
-                }
-              }}
-              placeholder="Message..."
-              className="flex-1 bg-transparent resize-none focus:outline-none text-foreground placeholder:text-muted-foreground max-h-32"
-              rows={1}
-              disabled={isLoading}
-            />
-            <button
-              type="submit"
-              disabled={!input.trim() || isLoading}
-              className="p-2 rounded-full bg-foreground text-background disabled:opacity-40 hover:opacity-80 transition-opacity"
-            >
-              <Send className="h-4 w-4" />
-            </button>
+      <div className="shrink-0 px-4 pb-6 pt-2 max-w-3xl mx-auto w-full">
+        {/* Suggestions shown only when chat is empty */}
+        {isEmpty && (
+          <div className="flex flex-wrap gap-2 mb-3 justify-center">
+            {SUGGESTIONS.map((s) => (
+              <PromptSuggestion
+                key={s}
+                onClick={() => handleSuggestion(s)}
+                className="text-xs h-8 px-3 rounded-full border border-border bg-background text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+              >
+                {s}
+              </PromptSuggestion>
+            ))}
           </div>
-        </form>
+        )}
+
+        <PromptInput
+          value={input}
+          onValueChange={setInput}
+          onSubmit={handleSubmit}
+          isLoading={isLoading}
+          className="shadow-sm"
+        >
+          <PromptInputTextarea placeholder="Message..." />
+          <PromptInputActions className="justify-end pt-1">
+            {isLoading ? (
+              <PromptInputAction tooltip="Stop">
+                <Button
+                  size="icon"
+                  className="h-8 w-8 rounded-full"
+                  onClick={() => stop()}
+                >
+                  <Square className="h-3.5 w-3.5 fill-current" />
+                </Button>
+              </PromptInputAction>
+            ) : (
+              <PromptInputAction tooltip="Send" disabled={!input.trim()}>
+                <Button
+                  size="icon"
+                  className="h-8 w-8 rounded-full"
+                  onClick={handleSubmit}
+                  disabled={!input.trim()}
+                >
+                  <ArrowUp className="h-4 w-4" />
+                </Button>
+              </PromptInputAction>
+            )}
+          </PromptInputActions>
+        </PromptInput>
+        <p className="text-center text-xs text-muted-foreground mt-2">
+          GPT-5.4 can make mistakes. Check important info.
+        </p>
       </div>
     </div>
   )
