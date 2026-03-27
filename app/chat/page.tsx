@@ -3,8 +3,13 @@
 import { Suspense, useState, useEffect, useRef } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { useChat } from '@ai-sdk/react'
-import { DefaultChatTransport, UIMessage } from 'ai'
+import {
+  DefaultChatTransport,
+  UIMessage,
+  lastAssistantMessageIsCompleteWithToolCalls,
+} from 'ai'
 import { ArrowUp, RotateCcw, Pencil, Check, X, Square } from 'lucide-react'
+import { MultipleChoice } from '@/components/chat/multiple-choice'
 import { Streamdown } from 'streamdown'
 import 'streamdown/styles.css'
 import { Button } from '@/components/ui/button'
@@ -42,8 +47,9 @@ function ChatPageInner() {
   const [editText, setEditText] = useState('')
   const didSendStarterRef = useRef(false)
 
-  const { messages, sendMessage, status, setMessages, stop } = useChat({
+  const { messages, sendMessage, status, setMessages, stop, addToolOutput } = useChat({
     transport: new DefaultChatTransport({ api: '/api/chat' }),
+    sendAutomaticallyWhen: lastAssistantMessageIsCompleteWithToolCalls,
   })
 
   // Auto-send message from landing page query param
@@ -182,18 +188,60 @@ function ChatPageInner() {
                     )}
                   </div>
                 ) : (
-                  <div className="max-w-[80%] flex flex-col gap-1">
-                    <Message>
-                      <MessageContent className="bg-transparent p-0 text-sm leading-relaxed prose prose-sm max-w-none prose-p:my-1 prose-headings:mt-3 prose-headings:mb-1">
-                        <Streamdown
-                          animated={{ animation: 'blurIn', duration: 200, easing: 'ease-out' }}
-                          isAnimating={isStreaming}
-                          caret={isStreaming ? 'block' : undefined}
-                        >
-                          {text}
-                        </Streamdown>
-                      </MessageContent>
-                    </Message>
+                  <div className="max-w-[80%] flex flex-col gap-3">
+                    {/* Render text content */}
+                    {text && (
+                      <Message>
+                        <MessageContent className="bg-transparent p-0 text-sm leading-relaxed prose prose-sm max-w-none prose-p:my-1 prose-headings:mt-3 prose-headings:mb-1">
+                          <Streamdown
+                            animated={{ animation: 'blurIn', duration: 200, easing: 'ease-out' }}
+                            isAnimating={isStreaming}
+                            caret={isStreaming ? 'block' : undefined}
+                          >
+                            {text}
+                          </Streamdown>
+                        </MessageContent>
+                      </Message>
+                    )}
+
+                    {/* Render tool invocations */}
+                    {message.parts
+                      ?.filter((part): part is Extract<typeof part, { type: `tool-${string}` }> =>
+                        part.type.startsWith('tool-')
+                      )
+                      .map((part) => {
+                        if (part.toolName === 'askMultipleChoice') {
+                          const toolPart = part as {
+                            type: string
+                            toolName: string
+                            toolCallId: string
+                            state: 'input-streaming' | 'input-available' | 'output-available' | 'output-error'
+                            input?: { question: string; options: { id: string; label: string }[] }
+                            output?: { selectedId: string; selectedLabel: string }
+                          }
+                          return (
+                            <MultipleChoice
+                              key={toolPart.toolCallId}
+                              question={toolPart.input?.question || 'Loading...'}
+                              options={toolPart.input?.options || []}
+                              state={toolPart.state}
+                              selectedId={toolPart.output?.selectedId}
+                              onSelect={(option) => {
+                                addToolOutput({
+                                  tool: 'askMultipleChoice',
+                                  toolCallId: toolPart.toolCallId,
+                                  output: {
+                                    selectedId: option.id,
+                                    selectedLabel: option.label,
+                                  },
+                                })
+                              }}
+                            />
+                          )
+                        }
+                        return null
+                      })}
+
                     {!isLoading && (
                       <MessageActions className="opacity-0 group-hover:opacity-100 transition-opacity">
                         <MessageAction tooltip="Regenerate">
