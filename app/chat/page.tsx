@@ -11,7 +11,6 @@ import {
   PromptInputActions,
   PromptInputAction,
 } from '@/components/prompt-kit/prompt-input'
-import { PromptSuggestion } from '@/components/prompt-kit/prompt-suggestion'
 import {
   Message,
   MessageContent,
@@ -23,13 +22,7 @@ import {
   ChatContainerContent,
   ChatContainerScrollAnchor,
 } from '@/components/prompt-kit/chat-container'
-
-const SUGGESTIONS = [
-  'Plan a road trip from NYC to LA',
-  'Best scenic routes in the Pacific Northwest',
-  'EV-friendly road trip tips',
-  'Hidden gems along Route 66',
-]
+import { TripStartState } from '@/components/chat/trip-start-state'
 
 function getMessageText(message: UIMessage): string {
   return (
@@ -58,8 +51,8 @@ export default function ChatPage() {
     setInput('')
   }
 
-  const handleSuggestion = (text: string) => {
-    sendMessage({ text })
+  const handleTripSubmit = (from: string, to: string) => {
+    sendMessage({ text: `Help me plan a trip from ${from} to ${to}` })
   }
 
   const handleEdit = (message: UIMessage) => {
@@ -96,19 +89,12 @@ export default function ChatPage() {
 
   return (
     <div className="flex flex-col h-screen bg-background font-sans">
-      {/* Header */}
-      <div className="flex items-center justify-center h-14 border-b border-border shrink-0">
-        <span className="text-sm font-medium text-foreground">GPT-5.4</span>
-      </div>
-
       {/* Messages */}
       <ChatContainerRoot className="flex-1 min-h-0">
         <ChatContainerContent className="max-w-3xl mx-auto w-full px-4 py-6 space-y-6">
           {isEmpty && (
-            <div className="flex items-center justify-center min-h-[40vh]">
-              <p className="text-2xl font-semibold text-foreground tracking-tight">
-                What can I help with?
-              </p>
+            <div className="flex items-center justify-center min-h-[calc(100vh-180px)]">
+              <TripStartState onSubmit={handleTripSubmit} />
             </div>
           )}
 
@@ -218,22 +204,9 @@ export default function ChatPage() {
         <ChatContainerScrollAnchor />
       </ChatContainerRoot>
 
-      {/* Input area */}
+      {/* Input area — only shown when conversation is active */}
+      {!isEmpty && (
       <div className="shrink-0 px-4 pb-6 pt-2 max-w-3xl mx-auto w-full">
-        {/* Suggestions shown only when chat is empty */}
-        {isEmpty && (
-          <div className="flex flex-wrap gap-2 mb-3 justify-center">
-            {SUGGESTIONS.map((s) => (
-              <PromptSuggestion
-                key={s}
-                onClick={() => handleSuggestion(s)}
-                className="text-xs h-8 px-3 rounded-full border border-border bg-background text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
-              >
-                {s}
-              </PromptSuggestion>
-            ))}
-          </div>
-        )}
 
         <PromptInput
           value={input}
@@ -268,10 +241,8 @@ export default function ChatPage() {
             )}
           </PromptInputActions>
         </PromptInput>
-        <p className="text-center text-xs text-muted-foreground mt-2">
-          GPT-5.4 can make mistakes. Check important info.
-        </p>
       </div>
+      )}
     </div>
   )
 }
