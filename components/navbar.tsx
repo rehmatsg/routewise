@@ -42,12 +42,6 @@ export function Navbar() {
           >
             Features
           </a>
-          <a
-            href="#waitlist"
-            className="inline-flex h-9 items-center rounded-lg bg-primary px-4 text-sm font-medium text-primary-foreground transition-opacity hover:opacity-90"
-          >
-            Join Waitlist
-          </a>
         </div>
 
         <button
