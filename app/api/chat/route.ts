@@ -75,7 +75,7 @@ export async function POST(req: Request) {
 
   try {
     const result = streamText({
-      model: 'openai/gpt-5.4',
+      model: 'google/gemini-3.1-flash-lite-preview',
       system: `You are a helpful road trip planning assistant for Routewise. Be concise and clear.
 
 When you need the user to choose between options (pace, accommodation, dining, route type, activities), use the askMultipleChoice tool.`,
