@@ -39,7 +39,7 @@ export default function UserResearchPage() {
             </span>
           </div>
 
-          <h1 className="font-display text-balance text-4xl font-bold text-foreground md:text-6xl">
+          <h1 className="font-sans text-balance text-4xl font-bold text-foreground md:text-6xl">
             Routewise
           </h1>
           <p className="mt-4 max-w-2xl text-pretty text-lg leading-relaxed text-muted-foreground md:text-xl">
@@ -67,7 +67,7 @@ export default function UserResearchPage() {
 
         {/* User Research Goals */}
         <section className="mt-12">
-          <h2 className="font-display text-2xl font-bold text-foreground flex items-center gap-2">
+          <h2 className="font-sans text-2xl font-bold text-foreground flex items-center gap-2">
             <ClipboardList className="h-6 w-6 text-primary" />
             User Research Goals
           </h2>
@@ -84,7 +84,7 @@ export default function UserResearchPage() {
 
         {/* Target Users */}
         <section className="mt-14">
-          <h2 className="font-display text-2xl font-bold text-foreground flex items-center gap-2">
+          <h2 className="font-sans text-2xl font-bold text-foreground flex items-center gap-2">
             <Users className="h-6 w-6 text-primary" />
             Target Users & Key Insights Sought
           </h2>
@@ -115,13 +115,13 @@ export default function UserResearchPage() {
 
         {/* Interview Plan */}
         <section className="mt-14">
-          <h2 className="font-display text-2xl font-bold text-foreground flex items-center gap-2">
+          <h2 className="font-sans text-2xl font-bold text-foreground flex items-center gap-2">
             <MessageCircle className="h-6 w-6 text-primary" />
             Interview Plan
           </h2>
           <div className="mt-4 space-y-4">
             <div className="rounded-xl border border-border bg-card p-5">
-              <h3 className="font-display font-semibold text-foreground">
+              <h3 className="font-sans font-semibold text-foreground">
                 WHO
               </h3>
               <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
@@ -136,7 +136,7 @@ export default function UserResearchPage() {
               </p>
             </div>
             <div className="rounded-xl border border-border bg-card p-5">
-              <h3 className="font-display font-semibold text-foreground">
+              <h3 className="font-sans font-semibold text-foreground">
                 WHERE
               </h3>
               <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
@@ -146,7 +146,7 @@ export default function UserResearchPage() {
               </p>
             </div>
             <div className="rounded-xl border border-border bg-card p-5">
-              <h3 className="font-display font-semibold text-foreground">
+              <h3 className="font-sans font-semibold text-foreground">
                 WHEN
               </h3>
               <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
@@ -155,7 +155,7 @@ export default function UserResearchPage() {
               </p>
             </div>
             <div className="rounded-xl border border-border bg-card p-5">
-              <h3 className="font-display font-semibold text-foreground">
+              <h3 className="font-sans font-semibold text-foreground">
                 SCRIPT
               </h3>
               <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
@@ -166,7 +166,7 @@ export default function UserResearchPage() {
               </p>
             </div>
             <div className="rounded-xl border border-border bg-card p-5">
-              <h3 className="font-display font-semibold text-foreground">
+              <h3 className="font-sans font-semibold text-foreground">
                 APPARATUS
               </h3>
               <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
@@ -174,7 +174,7 @@ export default function UserResearchPage() {
               </p>
             </div>
             <div className="rounded-xl border border-border bg-card p-5">
-              <h3 className="font-display font-semibold text-foreground">
+              <h3 className="font-sans font-semibold text-foreground">
                 ETHICS & BIASES
               </h3>
               <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
@@ -190,7 +190,7 @@ export default function UserResearchPage() {
 
         {/* Survey Plan */}
         <section className="mt-14">
-          <h2 className="font-display text-2xl font-bold text-foreground flex items-center gap-2">
+          <h2 className="font-sans text-2xl font-bold text-foreground flex items-center gap-2">
             <FileBarChart className="h-6 w-6 text-primary" />
             Survey Plan
           </h2>
@@ -235,13 +235,13 @@ export default function UserResearchPage() {
 
         {/* Conducting Interviews and Surveys */}
         <section className="mt-14">
-          <h2 className="font-display text-2xl font-bold text-foreground flex items-center gap-2">
+          <h2 className="font-sans text-2xl font-bold text-foreground flex items-center gap-2">
             <Mic2 className="h-6 w-6 text-primary" />
             Conducting Interviews and Surveys
           </h2>
           <div className="mt-4 grid gap-4 md:grid-cols-2">
             <div className="rounded-xl border border-border bg-card p-5">
-              <h3 className="font-display font-semibold text-foreground">
+              <h3 className="font-sans font-semibold text-foreground">
                 Interviews
               </h3>
               <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
@@ -251,7 +251,7 @@ export default function UserResearchPage() {
               </p>
             </div>
             <div className="rounded-xl border border-border bg-card p-5">
-              <h3 className="font-display font-semibold text-foreground">
+              <h3 className="font-sans font-semibold text-foreground">
                 Surveys
               </h3>
               <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
@@ -264,7 +264,7 @@ export default function UserResearchPage() {
 
         {/* Research Data: Interview Transcript */}
         <section className="mt-14">
-          <h2 className="font-display text-2xl font-bold text-foreground flex items-center gap-2">
+          <h2 className="font-sans text-2xl font-bold text-foreground flex items-center gap-2">
             <Quote className="h-6 w-6 text-primary" />
             Research Data: Interview Transcript Excerpt
           </h2>
@@ -415,7 +415,7 @@ export default function UserResearchPage() {
       {/* Affinity Diagram & Themes - wider layout for larger images */}
       <div className="mx-auto max-w-6xl px-6 pb-16">
         <section className="pt-4">
-          <h2 className="font-display text-2xl font-bold text-foreground">
+          <h2 className="font-sans text-2xl font-bold text-foreground">
             Affinity Diagram & Themes
           </h2>
           <p className="mt-2 text-sm text-muted-foreground">
@@ -447,7 +447,7 @@ export default function UserResearchPage() {
 
         {/* Empathy & Experience Map */}
         <section className="mt-14">
-          <h2 className="font-display text-2xl font-bold text-foreground">
+          <h2 className="font-sans text-2xl font-bold text-foreground">
             Empathy & Experience Map
           </h2>
           <p className="mt-2 text-sm text-muted-foreground">

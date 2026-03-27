@@ -38,7 +38,7 @@ export function IndustryTrends() {
         <p className="text-sm font-semibold uppercase tracking-wider text-primary">
           Industry Trends
         </p>
-        <h2 className="font-display mt-3 text-balance text-3xl font-bold text-foreground">
+        <h2 className="font-sans mt-3 text-balance text-3xl font-bold text-foreground">
           The market is ready
         </h2>
         <p className="mt-4 max-w-3xl text-pretty leading-relaxed text-muted-foreground">
@@ -67,7 +67,7 @@ export function IndustryTrends() {
                 <div className="mb-3 inline-flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
                   <trend.icon className="h-5 w-5 text-primary" />
                 </div>
-                <h3 className="font-display text-xl font-bold text-foreground">
+                <h3 className="font-sans text-xl font-bold text-foreground">
                   {trend.title}
                 </h3>
                 <p className="mt-3 text-pretty leading-relaxed text-muted-foreground">
@@ -83,12 +83,12 @@ export function IndustryTrends() {
 
         {/* Market Size Callout */}
         <div className="mt-16 rounded-2xl border border-border bg-card p-8">
-          <h3 className="font-display mb-6 text-center text-xl font-bold text-foreground">
+          <h3 className="font-sans mb-6 text-center text-xl font-bold text-foreground">
             Market Opportunity
           </h3>
           <div className="grid gap-6 md:grid-cols-3">
             <div className="text-center">
-              <p className="font-display text-3xl font-bold text-primary">
+              <p className="font-sans text-3xl font-bold text-primary">
                 $213.82B
               </p>
               <p className="mt-1 text-sm text-muted-foreground">
@@ -99,7 +99,7 @@ export function IndustryTrends() {
               </p>
             </div>
             <div className="text-center">
-              <p className="font-display text-3xl font-bold text-primary">
+              <p className="font-sans text-3xl font-bold text-primary">
                 11.8%
               </p>
               <p className="mt-1 text-sm text-muted-foreground">
@@ -110,7 +110,7 @@ export function IndustryTrends() {
               </p>
             </div>
             <div className="text-center">
-              <p className="font-display text-3xl font-bold text-accent">
+              <p className="font-sans text-3xl font-bold text-accent">
                 #1
               </p>
               <p className="mt-1 text-sm text-muted-foreground">

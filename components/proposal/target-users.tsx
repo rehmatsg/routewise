@@ -8,7 +8,7 @@ export function TargetUsers() {
         <p className="text-sm font-semibold uppercase tracking-wider text-primary">
           Target Users & Context
         </p>
-        <h2 className="font-display mt-3 text-balance text-3xl font-bold text-foreground">
+        <h2 className="font-sans mt-3 text-balance text-3xl font-bold text-foreground">
           Who we are building for
         </h2>
 
@@ -32,7 +32,7 @@ export function TargetUsers() {
                   Primary Persona
                 </span>
               </div>
-              <h3 className="font-display text-xl font-bold text-card-foreground">
+              <h3 className="font-sans text-xl font-bold text-card-foreground">
                 Tech-Savvy Travelers
               </h3>
               <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
@@ -63,7 +63,7 @@ export function TargetUsers() {
                   Key Segment
                 </span>
               </div>
-              <h3 className="font-display text-xl font-bold text-card-foreground">
+              <h3 className="font-sans text-xl font-bold text-card-foreground">
                 EV Road Trippers
               </h3>
               <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
@@ -82,7 +82,7 @@ export function TargetUsers() {
               <Sofa className="h-5 w-5 text-primary" />
             </div>
             <div>
-              <h3 className="font-display text-lg font-bold text-card-foreground">
+              <h3 className="font-sans text-lg font-bold text-card-foreground">
                 Context of Use
               </h3>
               <p className="mt-2 leading-relaxed text-muted-foreground">
@@ -97,13 +97,13 @@ export function TargetUsers() {
 
         {/* User Needs Diagram */}
         <div className="mt-12">
-          <h3 className="font-display mb-6 text-center text-xl font-bold text-foreground">
+          <h3 className="font-sans mb-6 text-center text-xl font-bold text-foreground">
             Core User Needs
           </h3>
           <div className="rounded-2xl border border-border bg-card p-8">
             <div className="flex flex-col items-center gap-6">
               <div className="flex h-20 w-20 items-center justify-center rounded-full bg-primary/10">
-                <span className="font-display text-sm font-bold text-primary text-center leading-tight">
+                <span className="font-sans text-sm font-bold text-primary text-center leading-tight">
                   User<br />Need
                 </span>
               </div>
@@ -126,7 +126,7 @@ export function TargetUsers() {
                     key={item.need}
                     className="rounded-xl border border-border p-4 text-center"
                   >
-                    <p className="font-display text-sm font-bold text-card-foreground">
+                    <p className="font-sans text-sm font-bold text-card-foreground">
                       {item.need}
                     </p>
                     <div className="my-2 mx-auto h-px w-8 bg-primary/40" />

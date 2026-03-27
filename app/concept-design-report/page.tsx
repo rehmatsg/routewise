@@ -30,7 +30,7 @@ export default function ConceptDesignReportPage() {
             </span>
           </div>
 
-          <h1 className="font-display text-balance text-4xl font-bold text-foreground md:text-6xl">
+          <h1 className="font-sans text-balance text-4xl font-bold text-foreground md:text-6xl">
             Concept Design Report
           </h1>
           <p className="mt-4 max-w-2xl text-pretty text-lg leading-relaxed text-muted-foreground md:text-xl">
@@ -47,7 +47,7 @@ export default function ConceptDesignReportPage() {
 
         {/* POV 1 */}
         <section className="mt-12">
-          <h2 className="font-display text-2xl font-bold text-foreground flex items-center gap-2">
+          <h2 className="font-sans text-2xl font-bold text-foreground flex items-center gap-2">
             <Target className="h-6 w-6 text-primary" />
             POV 1
           </h2>
@@ -75,7 +75,7 @@ export default function ConceptDesignReportPage() {
               </p>
             </div>
             <div className="mt-6">
-              <h3 className="font-display text-lg font-semibold text-foreground mb-3 flex items-center gap-2">
+              <h3 className="font-sans text-lg font-semibold text-foreground mb-3 flex items-center gap-2">
                 <HelpCircle className="h-5 w-5 text-primary" />
                 HMW&apos;s
               </h3>
@@ -109,7 +109,7 @@ export default function ConceptDesignReportPage() {
 
         {/* POV 2 */}
         <section className="mt-14">
-          <h2 className="font-display text-2xl font-bold text-foreground flex items-center gap-2">
+          <h2 className="font-sans text-2xl font-bold text-foreground flex items-center gap-2">
             <Target className="h-6 w-6 text-primary" />
             POV 2
           </h2>
@@ -138,7 +138,7 @@ export default function ConceptDesignReportPage() {
               </p>
             </div>
             <div className="mt-6">
-              <h3 className="font-display text-lg font-semibold text-foreground mb-3 flex items-center gap-2">
+              <h3 className="font-sans text-lg font-semibold text-foreground mb-3 flex items-center gap-2">
                 <HelpCircle className="h-5 w-5 text-primary" />
                 HMW&apos;s
               </h3>
@@ -172,7 +172,7 @@ export default function ConceptDesignReportPage() {
 
         {/* POV 3 */}
         <section className="mt-14">
-          <h2 className="font-display text-2xl font-bold text-foreground flex items-center gap-2">
+          <h2 className="font-sans text-2xl font-bold text-foreground flex items-center gap-2">
             <Target className="h-6 w-6 text-primary" />
             POV 3
           </h2>
@@ -202,7 +202,7 @@ export default function ConceptDesignReportPage() {
               </p>
             </div>
             <div className="mt-6">
-              <h3 className="font-display text-lg font-semibold text-foreground mb-3 flex items-center gap-2">
+              <h3 className="font-sans text-lg font-semibold text-foreground mb-3 flex items-center gap-2">
                 <HelpCircle className="h-5 w-5 text-primary" />
                 HMW&apos;s
               </h3>
@@ -240,7 +240,7 @@ export default function ConceptDesignReportPage() {
         </p>
 
         <section className="mt-12">
-          <h2 className="font-display text-2xl font-bold text-foreground flex items-center gap-2">
+          <h2 className="font-sans text-2xl font-bold text-foreground flex items-center gap-2">
             <CheckCircle2 className="h-6 w-6 text-primary" />
             Selected HMWs & Solutions
           </h2>
@@ -248,7 +248,7 @@ export default function ConceptDesignReportPage() {
           {/* HMW 1: Vibe */}
           <div className="mt-8 rounded-xl border border-border bg-card overflow-hidden">
             <div className="border-b border-border bg-secondary/30 px-5 py-4">
-              <p className="font-display font-semibold text-foreground">
+              <p className="font-sans font-semibold text-foreground">
                 HMW: How might we allow travelers to plan around a desired
                 &ldquo;vibe&rdquo; rather than just a destination?
               </p>
@@ -277,7 +277,7 @@ export default function ConceptDesignReportPage() {
           {/* HMW 2: Scenic routes safe */}
           <div className="mt-8 rounded-xl border border-border bg-card overflow-hidden">
             <div className="border-b border-border bg-secondary/30 px-5 py-4">
-              <p className="font-display font-semibold text-foreground">
+              <p className="font-sans font-semibold text-foreground">
                 HMW: How might we make scenic routes feel as safe and reliable as
                 the fastest highway routes?
               </p>
@@ -308,7 +308,7 @@ export default function ConceptDesignReportPage() {
           {/* HMW 3: Charging plan confidence */}
           <div className="mt-8 rounded-xl border border-border bg-card overflow-hidden">
             <div className="border-b border-border bg-secondary/30 px-5 py-4">
-              <p className="font-display font-semibold text-foreground">
+              <p className="font-sans font-semibold text-foreground">
                 HMW: How might we help EV travelers feel confident that their
                 charging plan won&apos;t collapse mid-trip?
               </p>
@@ -339,7 +339,7 @@ export default function ConceptDesignReportPage() {
 
         {/* Top 3 Solutions */}
         <section className="mt-16">
-          <h2 className="font-display text-2xl font-bold text-foreground flex items-center gap-2">
+          <h2 className="font-sans text-2xl font-bold text-foreground flex items-center gap-2">
             <CheckCircle2 className="h-6 w-6 text-primary" />
             Top 3 Solutions
           </h2>
@@ -377,7 +377,7 @@ export default function ConceptDesignReportPage() {
 
         {/* AI Disclosure */}
         <section className="mt-16 rounded-xl border border-border bg-secondary/40 p-6">
-          <h2 className="font-display text-xl font-bold text-foreground flex items-center gap-2">
+          <h2 className="font-sans text-xl font-bold text-foreground flex items-center gap-2">
             <Sparkles className="h-5 w-5 text-primary" />
             AI Disclosure
           </h2>

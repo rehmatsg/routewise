@@ -43,7 +43,7 @@ export function CompetitorAnalysis() {
         <p className="text-sm font-semibold uppercase tracking-wider text-primary">
           Market Research
         </p>
-        <h2 className="font-display mt-3 text-balance text-3xl font-bold text-foreground">
+        <h2 className="font-sans mt-3 text-balance text-3xl font-bold text-foreground">
           Competitor Analysis
         </h2>
         <p className="mt-4 max-w-3xl text-pretty leading-relaxed text-muted-foreground">
@@ -58,7 +58,7 @@ export function CompetitorAnalysis() {
               className="overflow-hidden rounded-2xl border border-border bg-card"
             >
               <div className="border-b border-border bg-secondary/50 px-6 py-4">
-                <h3 className="font-display text-lg font-bold text-card-foreground">
+                <h3 className="font-sans text-lg font-bold text-card-foreground">
                   {comp.name}
                 </h3>
               </div>
@@ -100,7 +100,7 @@ export function CompetitorAnalysis() {
 
         {/* Routewise Advantage */}
         <div className="mt-12 rounded-2xl border-2 border-primary/30 bg-primary/5 p-8">
-          <h3 className="font-display text-center text-xl font-bold text-foreground">
+          <h3 className="font-sans text-center text-xl font-bold text-foreground">
             The Routewise Advantage
           </h3>
           <p className="mt-3 text-center text-muted-foreground">

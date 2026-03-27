@@ -1,4 +1,4 @@
-import { MapPin } from "lucide-react";
+import { Route } from "lucide-react";
 import Link from "next/link";
 
 export function Footer() {
@@ -7,9 +7,9 @@ export function Footer() {
       <div className="mx-auto flex max-w-6xl flex-col items-center gap-6 px-6 md:flex-row md:justify-between">
         <div className="flex items-center gap-2">
           <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary">
-            <MapPin className="h-4 w-4 text-primary-foreground" />
+            <Route className="h-4 w-4 text-primary-foreground" />
           </div>
-          <span className="font-display text-lg font-bold text-foreground">
+          <span className="font-sans text-lg font-bold text-foreground">
             Routewise
           </span>
         </div>
