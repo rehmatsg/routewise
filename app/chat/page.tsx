@@ -91,9 +91,9 @@ export default function ChatPage() {
     <div className="flex flex-col h-screen bg-background font-sans">
       {/* Messages */}
       <ChatContainerRoot className="flex-1 min-h-0">
-        <ChatContainerContent className="max-w-3xl mx-auto w-full px-4 py-6 space-y-6">
+        <ChatContainerContent className="relative max-w-3xl mx-auto w-full px-4 py-6 space-y-6 h-full">
           {isEmpty && (
-            <div className="flex items-center justify-center min-h-[calc(100vh-180px)]">
+            <div className="absolute inset-0">
               <TripStartState onSubmit={handleTripSubmit} />
             </div>
           )}

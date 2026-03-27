@@ -3,7 +3,6 @@
 import { useEffect, useRef, useState } from "react"
 import createGlobe from "cobe"
 import { MapPin, Navigation, ArrowRight } from "lucide-react"
-import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 
 function Globe() {
@@ -87,102 +86,73 @@ export function TripStartState({ onSubmit }: TripStartStateProps) {
   }
 
   return (
-    <div className="relative flex flex-col items-center justify-center w-full h-full overflow-hidden">
-      {/* Globe background — faded, large, centered */}
-      <div className="absolute inset-0 flex items-center justify-center pointer-events-none select-none">
-        <div className="w-[600px] max-w-[90vw] opacity-40">
+    <div className="relative flex items-center justify-center w-full h-full">
+      {/* Globe — absolutely fills the whole area, never clipped */}
+      <div
+        className="absolute inset-0 flex items-center justify-center pointer-events-none select-none"
+        aria-hidden="true"
+      >
+        <div className="w-[700px] max-w-[100vw] opacity-35">
           <Globe />
         </div>
       </div>
 
-      {/* Foreground content */}
-      <div className="relative z-10 flex flex-col items-center gap-8 px-4 w-full max-w-md">
-        <div className="text-center">
-          <h1 className="text-2xl font-semibold tracking-tight text-foreground">
-            Where are you headed?
-          </h1>
-          <p className="mt-1.5 text-sm text-muted-foreground">
-            Enter your start and destination to plan your trip.
-          </p>
-        </div>
-
-        {/* Grouped address inputs */}
+      {/* Foreground card */}
+      <div className="relative z-10 w-full max-w-sm px-4">
         <form
           onSubmit={handleSubmit}
-          className="w-full rounded-2xl border border-border bg-background shadow-sm overflow-hidden"
+          className="w-full rounded-2xl border border-border bg-background/90 backdrop-blur-sm shadow-sm overflow-hidden"
         >
           {/* Start At */}
           <div className="flex items-center gap-3 px-4 py-3.5">
-            <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-muted">
-              <Navigation className="h-3.5 w-3.5 text-foreground" />
-            </div>
-            <div className="flex-1 min-w-0">
-              <label
-                htmlFor="trip-from"
-                className="block text-[10px] font-medium uppercase tracking-widest text-muted-foreground mb-0.5"
-              >
-                Start At
-              </label>
-              <input
-                id="trip-from"
-                type="text"
-                value={from}
-                onChange={(e) => setFrom(e.target.value)}
-                onKeyDown={handleKeyDown}
-                placeholder="New York, NY"
-                autoComplete="off"
-                className={cn(
-                  "w-full bg-transparent text-sm text-foreground placeholder:text-muted-foreground/60",
-                  "outline-none border-none focus:ring-0 leading-snug"
-                )}
-              />
-            </div>
+            <Navigation className="h-4 w-4 shrink-0 text-muted-foreground" />
+            <input
+              id="trip-from"
+              type="text"
+              value={from}
+              onChange={(e) => setFrom(e.target.value)}
+              onKeyDown={handleKeyDown}
+              placeholder="Start at…"
+              autoComplete="off"
+              className={cn(
+                "flex-1 min-w-0 bg-transparent text-sm text-foreground placeholder:text-muted-foreground/60",
+                "outline-none border-none focus:ring-0 leading-snug"
+              )}
+            />
           </div>
 
           {/* Divider */}
-          <div className="relative flex items-center">
-            <div className="h-px flex-1 bg-border ml-14" />
-          </div>
+          <div className="h-px bg-border ml-11 mr-0" />
 
           {/* Destination */}
           <div className="flex items-center gap-3 px-4 py-3.5">
-            <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-foreground">
-              <MapPin className="h-3.5 w-3.5 text-background" />
-            </div>
-            <div className="flex-1 min-w-0">
-              <label
-                htmlFor="trip-to"
-                className="block text-[10px] font-medium uppercase tracking-widest text-muted-foreground mb-0.5"
-              >
-                Destination
-              </label>
-              <input
-                id="trip-to"
-                type="text"
-                value={to}
-                onChange={(e) => setTo(e.target.value)}
-                onKeyDown={handleKeyDown}
-                placeholder="Los Angeles, CA"
-                autoComplete="off"
+            <MapPin className="h-4 w-4 shrink-0 text-muted-foreground" />
+            <input
+              id="trip-to"
+              type="text"
+              value={to}
+              onChange={(e) => setTo(e.target.value)}
+              onKeyDown={handleKeyDown}
+              placeholder="Destination…"
+              autoComplete="off"
+              className={cn(
+                "flex-1 min-w-0 bg-transparent text-sm text-foreground placeholder:text-muted-foreground/60",
+                "outline-none border-none focus:ring-0 leading-snug"
+              )}
+            />
+            {/* Submit icon — only shown when both fields are filled */}
+            {canSubmit && (
+              <button
+                type="submit"
+                aria-label="Plan trip"
                 className={cn(
-                  "w-full bg-transparent text-sm text-foreground placeholder:text-muted-foreground/60",
-                  "outline-none border-none focus:ring-0 leading-snug"
+                  "flex h-7 w-7 shrink-0 items-center justify-center rounded-lg",
+                  "bg-foreground text-background transition-opacity hover:opacity-80"
                 )}
-              />
-            </div>
-          </div>
-
-          {/* Submit row */}
-          <div className="border-t border-border px-4 py-3 flex justify-end">
-            <Button
-              type="submit"
-              size="sm"
-              disabled={!canSubmit}
-              className="rounded-xl gap-1.5 text-xs h-8 px-4"
-            >
-              Plan Trip
-              <ArrowRight className="h-3.5 w-3.5" />
-            </Button>
+              >
+                <ArrowRight className="h-3.5 w-3.5" />
+              </button>
+            )}
           </div>
         </form>
       </div>
