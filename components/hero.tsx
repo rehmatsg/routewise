@@ -125,15 +125,8 @@ export function Hero() {
       <div className="mx-auto grid max-w-6xl grid-cols-1 items-center gap-12 px-6 py-24 md:grid-cols-2">
         {/* Text */}
         <div>
-          <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-border bg-secondary px-4 py-1.5">
-            <Sparkles className="h-4 w-4 text-foreground" />
-            <span className="text-sm font-medium text-foreground">
-              Coming Soon
-            </span>
-          </div>
-
-          <h1 className="font-sans text-balance text-5xl font-bold leading-tight tracking-tight text-foreground md:text-6xl">
-            Road trips, planned by AI
+          <h1 className="font-serif text-balance text-5xl font-light leading-tight tracking-tight text-foreground md:text-6xl">
+            EV trips, planned by AI
           </h1>
 
           <TripForm />
