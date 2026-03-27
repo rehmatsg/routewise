@@ -23,7 +23,7 @@ export function Waitlist() {
           <p className="text-sm font-semibold uppercase tracking-wider text-primary">
             Be first in line
           </p>
-          <h2 className="font-display mt-3 text-balance text-3xl font-bold text-foreground md:text-5xl">
+          <h2 className="font-sans mt-3 text-balance text-3xl font-bold text-foreground md:text-5xl">
             Get early access
           </h2>
           <p className="mt-4 text-pretty text-lg text-muted-foreground">

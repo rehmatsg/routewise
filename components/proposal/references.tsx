@@ -27,7 +27,7 @@ export function References() {
       <div className="mx-auto max-w-4xl px-6">
         <div className="flex items-center gap-3">
           <BookOpen className="h-5 w-5 text-primary" />
-          <h2 className="font-display text-2xl font-bold text-foreground">
+          <h2 className="font-sans text-2xl font-bold text-foreground">
             References
           </h2>
         </div>
@@ -38,11 +38,11 @@ export function References() {
               key={ref.title}
               className="flex gap-4 rounded-xl border border-border bg-card p-6"
             >
-              <span className="font-display text-2xl font-bold text-border">
+              <span className="font-sans text-2xl font-bold text-border">
                 {String(index + 1).padStart(2, "0")}
               </span>
               <div>
-                <p className="font-display font-bold text-card-foreground">
+                <p className="font-sans font-bold text-card-foreground">
                   {ref.title}
                 </p>
                 <p className="mt-1 text-sm font-medium text-primary">

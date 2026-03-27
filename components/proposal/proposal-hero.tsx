@@ -19,7 +19,7 @@ export function ProposalHero() {
           </span>
         </div>
 
-        <h1 className="font-display text-balance text-4xl font-bold text-foreground md:text-6xl">
+        <h1 className="font-sans text-balance text-4xl font-bold text-foreground md:text-6xl">
           Routewise
         </h1>
         <p className="mt-4 max-w-2xl text-pretty text-lg leading-relaxed text-muted-foreground md:text-xl">

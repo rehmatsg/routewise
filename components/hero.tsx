@@ -24,7 +24,7 @@ export function Hero() {
           </span>
         </div>
 
-        <h1 className="font-display max-w-4xl text-balance text-5xl font-bold leading-tight tracking-tight text-foreground md:text-7xl">
+        <h1 className="font-sans max-w-4xl text-balance text-5xl font-bold leading-tight tracking-tight text-foreground md:text-7xl">
           The road trip you{" "}
           <span className="text-primary">actually want</span>, planned by AI
         </h1>
@@ -53,7 +53,7 @@ export function Hero() {
 
         <div className="mt-16 grid max-w-lg grid-cols-3 gap-8 text-center">
           <div>
-            <p className="font-display text-3xl font-bold text-foreground">
+            <p className="font-sans text-3xl font-bold text-foreground">
               $214B
             </p>
             <p className="mt-1 text-sm text-muted-foreground">
@@ -61,7 +61,7 @@ export function Hero() {
             </p>
           </div>
           <div>
-            <p className="font-display text-3xl font-bold text-foreground">
+            <p className="font-sans text-3xl font-bold text-foreground">
               11.8%
             </p>
             <p className="mt-1 text-sm text-muted-foreground">
@@ -69,7 +69,7 @@ export function Hero() {
             </p>
           </div>
           <div>
-            <p className="font-display text-3xl font-bold text-foreground">
+            <p className="font-sans text-3xl font-bold text-foreground">
               0
             </p>
             <p className="mt-1 text-sm text-muted-foreground">

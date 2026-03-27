@@ -34,7 +34,7 @@ export function ProblemSection() {
         <p className="text-sm font-semibold uppercase tracking-wider text-primary">
           Problem Statement
         </p>
-        <h2 className="font-display mt-3 text-balance text-3xl font-bold text-foreground">
+        <h2 className="font-sans mt-3 text-balance text-3xl font-bold text-foreground">
           Why road trip planning is broken
         </h2>
         <p className="mt-4 max-w-3xl text-pretty leading-relaxed text-muted-foreground">
@@ -61,7 +61,7 @@ export function ProblemSection() {
               <div className="mb-3 inline-flex h-10 w-10 items-center justify-center rounded-lg bg-accent/20">
                 <point.icon className="h-5 w-5 text-accent" />
               </div>
-              <h3 className="font-display text-lg font-bold text-card-foreground">
+              <h3 className="font-sans text-lg font-bold text-card-foreground">
                 {point.title}
               </h3>
               <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
@@ -73,7 +73,7 @@ export function ProblemSection() {
 
         {/* Visual diagram: The current broken workflow */}
         <div className="mt-16">
-          <h3 className="font-display mb-6 text-center text-xl font-bold text-foreground">
+          <h3 className="font-sans mb-6 text-center text-xl font-bold text-foreground">
             Current Trip Planning Workflow
           </h3>
           <div className="rounded-2xl border border-border bg-card p-8">
@@ -87,7 +87,7 @@ export function ProblemSection() {
               ].map((item, i) => (
                 <div key={item.step} className="flex items-center gap-3 md:flex-1">
                   <div className="flex flex-col items-center text-center">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-accent/20 font-display text-sm font-bold text-accent">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-accent/20 font-sans text-sm font-bold text-accent">
                       {item.step}
                     </div>
                     <p className="mt-2 text-sm font-semibold text-card-foreground">

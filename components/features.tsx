@@ -57,7 +57,7 @@ export function Features() {
           <p className="text-sm font-semibold uppercase tracking-wider text-primary">
             What we are building
           </p>
-          <h2 className="font-display mt-3 text-balance text-3xl font-bold text-foreground md:text-5xl">
+          <h2 className="font-sans mt-3 text-balance text-3xl font-bold text-foreground md:text-5xl">
             Road trips, reimagined
           </h2>
           <p className="mx-auto mt-4 max-w-2xl text-pretty text-lg text-muted-foreground">
@@ -78,7 +78,7 @@ export function Features() {
                 <div className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10">
                   <feature.icon className="h-6 w-6 text-primary" />
                 </div>
-                <h3 className="font-display text-2xl font-bold text-foreground">
+                <h3 className="font-sans text-2xl font-bold text-foreground">
                   {feature.title}
                 </h3>
                 <p className="mt-3 max-w-md text-pretty leading-relaxed text-muted-foreground">
@@ -107,7 +107,7 @@ export function Features() {
               <div className="mb-4 inline-flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
                 <item.icon className="h-5 w-5 text-primary" />
               </div>
-              <h3 className="font-display text-lg font-bold text-card-foreground">
+              <h3 className="font-sans text-lg font-bold text-card-foreground">
                 {item.title}
               </h3>
               <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
