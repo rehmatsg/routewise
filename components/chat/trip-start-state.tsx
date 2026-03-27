@@ -70,7 +70,7 @@ export function TripStartState({ onSubmit }: TripStartStateProps) {
   const [from, setFrom] = useState("")
   const [to, setTo] = useState("")
 
-  const canSubmit = from.trim() && to.trim()
+  const canSubmit = from.trim().length > 0 && to.trim().length > 0
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -87,7 +87,7 @@ export function TripStartState({ onSubmit }: TripStartStateProps) {
 
   return (
     <div className="relative flex items-center justify-center w-full h-full">
-      {/* Globe — absolutely fills the whole area, never clipped */}
+      {/* Globe fills the whole area */}
       <div
         className="absolute inset-0 flex items-center justify-center pointer-events-none select-none"
         aria-hidden="true"
@@ -107,12 +107,11 @@ export function TripStartState({ onSubmit }: TripStartStateProps) {
           <div className="flex items-center gap-3 px-4 py-3.5">
             <Navigation className="h-4 w-4 shrink-0 text-muted-foreground" />
             <input
-              id="trip-from"
               type="text"
               value={from}
               onChange={(e) => setFrom(e.target.value)}
               onKeyDown={handleKeyDown}
-              placeholder="Start at…"
+              placeholder="Start at..."
               autoComplete="off"
               className={cn(
                 "flex-1 min-w-0 bg-transparent text-sm text-foreground placeholder:text-muted-foreground/60",
@@ -122,33 +121,28 @@ export function TripStartState({ onSubmit }: TripStartStateProps) {
           </div>
 
           {/* Divider */}
-          <div className="h-px bg-border ml-11 mr-0" />
+          <div className="h-px bg-border ml-11" />
 
           {/* Destination */}
           <div className="flex items-center gap-3 px-4 py-3.5">
             <MapPin className="h-4 w-4 shrink-0 text-muted-foreground" />
             <input
-              id="trip-to"
               type="text"
               value={to}
               onChange={(e) => setTo(e.target.value)}
               onKeyDown={handleKeyDown}
-              placeholder="Destination…"
+              placeholder="Destination..."
               autoComplete="off"
               className={cn(
                 "flex-1 min-w-0 bg-transparent text-sm text-foreground placeholder:text-muted-foreground/60",
                 "outline-none border-none focus:ring-0 leading-snug"
               )}
             />
-            {/* Submit icon — only shown when both fields are filled */}
             {canSubmit && (
               <button
                 type="submit"
                 aria-label="Plan trip"
-                className={cn(
-                  "flex h-7 w-7 shrink-0 items-center justify-center rounded-lg",
-                  "bg-foreground text-background transition-opacity hover:opacity-80"
-                )}
+                className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-foreground text-background transition-opacity hover:opacity-80"
               >
                 <ArrowRight className="h-3.5 w-3.5" />
               </button>
