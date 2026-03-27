@@ -87,16 +87,25 @@ export function TripStartState({ onSubmit }: TripStartStateProps) {
   }
 
   return (
-    <div className="relative flex flex-col items-center justify-center w-full h-full">
-      {/* Globe background — faded, large, positioned absolutely without overflow */}
-      <div className="absolute inset-0 flex items-center justify-center pointer-events-none select-none overflow-hidden">
-        <div className="w-[800px] opacity-40 transform translate-y-12">
+    <div className="relative flex flex-col items-center justify-center w-full h-full overflow-hidden">
+      {/* Globe background — faded, large, centered */}
+      <div className="absolute inset-0 flex items-center justify-center pointer-events-none select-none">
+        <div className="w-[600px] max-w-[90vw] opacity-40">
           <Globe />
         </div>
       </div>
 
       {/* Foreground content */}
-      <div className="relative z-10 flex flex-col items-center gap-6 px-4 w-full max-w-md">
+      <div className="relative z-10 flex flex-col items-center gap-8 px-4 w-full max-w-md">
+        <div className="text-center">
+          <h1 className="text-2xl font-semibold tracking-tight text-foreground">
+            Where are you headed?
+          </h1>
+          <p className="mt-1.5 text-sm text-muted-foreground">
+            Enter your start and destination to plan your trip.
+          </p>
+        </div>
+
         {/* Grouped address inputs */}
         <form
           onSubmit={handleSubmit}
@@ -107,19 +116,28 @@ export function TripStartState({ onSubmit }: TripStartStateProps) {
             <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-muted">
               <Navigation className="h-3.5 w-3.5 text-foreground" />
             </div>
-            <input
-              id="trip-from"
-              type="text"
-              value={from}
-              onChange={(e) => setFrom(e.target.value)}
-              onKeyDown={handleKeyDown}
-              placeholder="Start At"
-              autoComplete="off"
-              className={cn(
-                "w-full bg-transparent text-sm text-foreground placeholder:text-muted-foreground/60",
-                "outline-none border-none focus:ring-0 leading-snug"
-              )}
-            />
+            <div className="flex-1 min-w-0">
+              <label
+                htmlFor="trip-from"
+                className="block text-[10px] font-medium uppercase tracking-widest text-muted-foreground mb-0.5"
+              >
+                Start At
+              </label>
+              <input
+                id="trip-from"
+                type="text"
+                value={from}
+                onChange={(e) => setFrom(e.target.value)}
+                onKeyDown={handleKeyDown}
+                placeholder="New York, NY"
+                autoComplete="off"
+                className={cn(
+                  "w-full bg-transparent text-sm text-foreground placeholder:text-muted-foreground/60",
+                  "outline-none border-none focus:ring-0 leading-snug"
+                )}
+              />
+            </div>
+          </div>
 
           {/* Divider */}
           <div className="relative flex items-center">
@@ -128,29 +146,43 @@ export function TripStartState({ onSubmit }: TripStartStateProps) {
 
           {/* Destination */}
           <div className="flex items-center gap-3 px-4 py-3.5">
-            <MapPin className="h-3.5 w-3.5 text-foreground shrink-0" />
-            <input
-              id="trip-to"
-              type="text"
-              value={to}
-              onChange={(e) => setTo(e.target.value)}
-              onKeyDown={handleKeyDown}
-              placeholder="Destination"
-              autoComplete="off"
-              className={cn(
-                "flex-1 bg-transparent text-sm text-foreground placeholder:text-muted-foreground/60",
-                "outline-none border-none focus:ring-0 leading-snug"
-              )}
-            />
-            {canSubmit && (
-              <button
-                type="submit"
-                className="ml-2 p-1.5 text-foreground hover:text-primary transition-colors shrink-0"
-                aria-label="Plan trip"
+            <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-foreground">
+              <MapPin className="h-3.5 w-3.5 text-background" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <label
+                htmlFor="trip-to"
+                className="block text-[10px] font-medium uppercase tracking-widest text-muted-foreground mb-0.5"
               >
-                <ArrowRight className="h-4 w-4" />
-              </button>
-            )}
+                Destination
+              </label>
+              <input
+                id="trip-to"
+                type="text"
+                value={to}
+                onChange={(e) => setTo(e.target.value)}
+                onKeyDown={handleKeyDown}
+                placeholder="Los Angeles, CA"
+                autoComplete="off"
+                className={cn(
+                  "w-full bg-transparent text-sm text-foreground placeholder:text-muted-foreground/60",
+                  "outline-none border-none focus:ring-0 leading-snug"
+                )}
+              />
+            </div>
+          </div>
+
+          {/* Submit row */}
+          <div className="border-t border-border px-4 py-3 flex justify-end">
+            <Button
+              type="submit"
+              size="sm"
+              disabled={!canSubmit}
+              className="rounded-xl gap-1.5 text-xs h-8 px-4"
+            >
+              Plan Trip
+              <ArrowRight className="h-3.5 w-3.5" />
+            </Button>
           </div>
         </form>
       </div>
