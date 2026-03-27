@@ -50,6 +50,7 @@ function ChatPageInner() {
   const { messages, sendMessage, status, setMessages, stop, addToolOutput } = useChat({
     transport: new DefaultChatTransport({ api: '/api/chat' }),
     sendAutomaticallyWhen: lastAssistantMessageIsCompleteWithToolCalls,
+    onError: (err) => console.error('[v0] useChat error', err),
   })
 
   // Auto-send message from landing page query param
@@ -58,6 +59,7 @@ function ChatPageInner() {
     const message = searchParams.get('message')
     if (message) {
       didSendStarterRef.current = true
+      console.log('[v0] sending starter message from query param')
       sendMessage({ text: decodeURIComponent(message) })
     }
   }, [searchParams, sendMessage])
@@ -195,8 +197,8 @@ function ChatPageInner() {
                         <MessageContent className="bg-transparent p-0 text-sm leading-relaxed prose prose-sm max-w-none prose-p:my-1 prose-headings:mt-3 prose-headings:mb-1">
                           <Streamdown
                             animated={{ animation: 'blurIn', duration: 200, easing: 'ease-out' }}
-                            isAnimating={isStreaming}
-                            caret={isStreaming ? 'block' : undefined}
+                            isAnimating={isStreaming && status === 'streaming'}
+                            caret={isStreaming && status === 'streaming' ? 'block' : undefined}
                           >
                             {text}
                           </Streamdown>
