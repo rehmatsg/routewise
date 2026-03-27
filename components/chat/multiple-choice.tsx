@@ -24,16 +24,27 @@ export function MultipleChoice({
   onSelect,
 }: MultipleChoiceProps) {
   const isSelectable = state === 'input-available'
-  const hasSelected = state === 'output-available' && selectedId
+  const selectedOption = options.find((o) => o.id === selectedId)
+
+  // Once answered, show compact summary
+  if (state === 'output-available' && selectedOption) {
+    return (
+      <div className="flex items-center gap-2 px-3 py-2 rounded-lg border border-border bg-muted/50 text-sm max-w-md">
+        <Check className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
+        <span className="text-muted-foreground">{question}</span>
+        <span className="text-foreground font-medium">&mdash; {selectedOption.label}</span>
+      </div>
+    )
+  }
 
   return (
     <div className="flex flex-col gap-3 max-w-md">
       <p className="text-sm font-medium text-foreground">{question}</p>
-      <div className="flex flex-col gap-2">
-        {options.map((option) => {
-          const isSelected = selectedId === option.id
-
-          return (
+      {state === 'input-streaming' ? (
+        <p className="text-xs text-muted-foreground">Loading options...</p>
+      ) : (
+        <div className="flex flex-col gap-2">
+          {options.map((option) => (
             <button
               key={option.id}
               onClick={() => isSelectable && onSelect(option)}
@@ -41,20 +52,14 @@ export function MultipleChoice({
               className={cn(
                 'flex items-center justify-between px-4 py-3 rounded-xl border text-sm text-left transition-all',
                 isSelectable && 'hover:bg-muted hover:border-foreground/20 cursor-pointer',
-                !isSelectable && !isSelected && 'opacity-50 cursor-default',
-                isSelected
-                  ? 'bg-foreground text-background border-foreground'
-                  : 'bg-background border-border text-foreground'
+                !isSelectable && 'opacity-50 cursor-default',
+                'bg-background border-border text-foreground'
               )}
             >
-              <span>{option.label}</span>
-              {isSelected && <Check className="h-4 w-4 shrink-0 ml-2" />}
+              {option.label}
             </button>
-          )
-        })}
-      </div>
-      {state === 'input-streaming' && (
-        <p className="text-xs text-muted-foreground">Loading options...</p>
+          ))}
+        </div>
       )}
     </div>
   )
