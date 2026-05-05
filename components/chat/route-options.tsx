@@ -67,12 +67,12 @@ export function RouteOptions({
   if (state === 'output-available' && selectedOption) {
     const accent = optionAccents[options.indexOf(selectedOption) % optionAccents.length]
     return (
-      <div className="flex items-center gap-2.5 px-3 py-2.5 rounded-xl border border-border bg-muted/40 text-sm max-w-md">
-        <div className={cn('h-4 w-0.5 rounded-full shrink-0', accent.bar)} />
-        <span className="text-muted-foreground">Route chosen:</span>
-        <span className="text-foreground font-semibold">{selectedOption.name}</span>
-        <div className="ml-auto h-5 w-5 rounded-full bg-foreground flex items-center justify-center shrink-0">
-          <Check className="h-3 w-3 text-background" />
+      <div className="flex items-center gap-3 px-4 py-3 rounded-xl border border-border bg-muted/40 text-sm w-full">
+        <div className={cn('h-5 w-1 rounded-full shrink-0', accent.bar)} />
+        <span className="text-muted-foreground shrink-0">Route chosen:</span>
+        <span className="text-foreground font-semibold flex-1 min-w-0 truncate">{selectedOption.name}</span>
+        <div className="h-6 w-6 rounded-full bg-foreground flex items-center justify-center shrink-0">
+          <Check className="h-3.5 w-3.5 text-background" />
         </div>
       </div>
     )
