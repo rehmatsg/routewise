@@ -9,7 +9,13 @@ import {
   lastAssistantMessageIsCompleteWithToolCalls,
 } from 'ai'
 import { ArrowUp, RotateCcw, Pencil, Check, X, Square } from 'lucide-react'
+
 import { MultipleChoice } from '@/components/chat/multiple-choice'
+import { RouteStopList } from '@/components/chat/route-stop'
+import { RouteSummary } from '@/components/chat/route-summary'
+import { SuggestedStops } from '@/components/chat/suggested-stops'
+import { ChargingStations } from '@/components/chat/charging-stations'
+import { RouteOptions } from '@/components/chat/route-options'
 import { Button } from '@/components/ui/button'
 import {
   PromptInput,
@@ -22,6 +28,7 @@ import {
   ChatContainerContent,
   ChatContainerScrollAnchor,
 } from '@/components/prompt-kit/chat-container'
+import { ChatMessage } from '@/app/api/chat/route'
 
 function getMessageText(message: UIMessage): string {
   return (
@@ -32,6 +39,201 @@ function getMessageText(message: UIMessage): string {
   )
 }
 
+// ─── Tool Part Renderer ───────────────────────────────────────────────────────
+
+function ToolPartRenderer({
+  part,
+  addToolOutput,
+}: {
+  part: NonNullable<ChatMessage['parts']>[number]
+  addToolOutput: ReturnType<typeof useChat>['addToolOutput']
+}) {
+  // askMultipleChoice
+  if (part.type === 'tool-askMultipleChoice') {
+    const p = part as {
+      type: 'tool-askMultipleChoice'
+      toolCallId: string
+      state: 'input-streaming' | 'input-available' | 'output-available' | 'output-error'
+      input?: { question: string; options: { id: string; label: string }[] }
+      output?: { selectedId: string; selectedLabel: string }
+    }
+    return (
+      <MultipleChoice
+        question={p.input?.question ?? ''}
+        options={p.input?.options ?? []}
+        state={p.state}
+        selectedId={p.output?.selectedId}
+        onSelect={(option) => {
+          addToolOutput({
+            tool: 'askMultipleChoice',
+            toolCallId: p.toolCallId,
+            output: { selectedId: option.id, selectedLabel: option.label },
+          })
+        }}
+      />
+    )
+  }
+
+  // showRouteStops
+  if (part.type === 'tool-showRouteStops') {
+    const p = part as {
+      type: 'tool-showRouteStops'
+      state: 'input-streaming' | 'input-available' | 'output-available' | 'output-error'
+      input?: {
+        stops: Array<{
+          name: string
+          location: string
+          category?: 'food' | 'coffee' | 'fuel' | 'attraction' | 'lodging' | 'shopping' | 'scenic' | 'entertainment' | 'default'
+          description?: string | null
+        }>
+      }
+    }
+    return (
+      <RouteStopList
+        stops={p.input?.stops ?? []}
+        state={p.state === 'output-error' ? 'input-available' : p.state}
+      />
+    )
+  }
+
+  // showRouteSummary
+  if (part.type === 'tool-showRouteSummary') {
+    const p = part as {
+      type: 'tool-showRouteSummary'
+      state: 'input-streaming' | 'input-available' | 'output-available' | 'output-error'
+      input?: {
+        origin: string
+        destination: string
+        stops: Array<{
+          name: string
+          location: string
+          category?: 'food' | 'coffee' | 'fuel' | 'attraction' | 'lodging' | 'shopping' | 'scenic' | 'entertainment' | 'default' | null
+          durationFromPrev?: string | null
+        }>
+        totalDistance?: string | null
+        totalDuration?: string | null
+        approximateEta?: string | null
+      }
+    }
+    return (
+      <RouteSummary
+        origin={p.input?.origin ?? ''}
+        destination={p.input?.destination ?? ''}
+        stops={p.input?.stops ?? []}
+        totalDistance={p.input?.totalDistance}
+        totalDuration={p.input?.totalDuration}
+        approximateEta={p.input?.approximateEta}
+        state={p.state === 'output-error' ? 'input-available' : p.state}
+      />
+    )
+  }
+
+  // showSuggestedStops
+  if (part.type === 'tool-showSuggestedStops') {
+    const p = part as {
+      type: 'tool-showSuggestedStops'
+      toolCallId: string
+      state: 'input-streaming' | 'input-available' | 'output-available' | 'output-error'
+      input?: {
+        title: string
+        chips: Array<{
+          id: string
+          label: string
+          sublabel?: string | null
+          category?: 'food' | 'coffee' | 'fuel' | 'attraction' | 'lodging' | 'shopping' | 'scenic' | 'entertainment' | 'default' | null
+        }>
+        multiSelect: boolean
+      }
+      output?: Array<{ id: string; label: string }>
+    }
+    return (
+      <SuggestedStops
+        title={p.input?.title}
+        chips={p.input?.chips ?? []}
+        multiSelect={p.input?.multiSelect ?? true}
+        state={p.state === 'output-error' ? 'input-available' : p.state}
+        selectedIds={p.output?.map((o) => o.id)}
+        onSelect={(selected) => {
+          addToolOutput({
+            tool: 'showSuggestedStops',
+            toolCallId: p.toolCallId,
+            output: selected.map((s) => ({ id: s.id, label: s.label })),
+          })
+        }}
+      />
+    )
+  }
+
+  // showChargingStations
+  if (part.type === 'tool-showChargingStations') {
+    const p = part as {
+      type: 'tool-showChargingStations'
+      state: 'input-streaming' | 'input-available' | 'output-available' | 'output-error'
+      input?: {
+        title?: string | null
+        stations: Array<{
+          name: string
+          location: string
+          network?: string | null
+          ports?: number | null
+          maxKw?: number | null
+          distanceFromRoute?: string | null
+          estimatedChargingTime?: string | null
+          amenitiesNearby?: string[] | null
+        }>
+      }
+    }
+    return (
+      <ChargingStations
+        stations={p.input?.stations ?? []}
+        title={p.input?.title ?? undefined}
+        state={p.state === 'output-error' ? 'input-available' : p.state}
+      />
+    )
+  }
+
+  // showRouteOptions
+  if (part.type === 'tool-showRouteOptions') {
+    const p = part as {
+      type: 'tool-showRouteOptions'
+      toolCallId: string
+      state: 'input-streaming' | 'input-available' | 'output-available' | 'output-error'
+      input?: {
+        question: string
+        options: Array<{
+          id: string
+          name: string
+          description?: string | null
+          distance?: string | null
+          duration?: string | null
+          highlights?: string[] | null
+          tags?: Array<'scenic' | 'fast' | 'eco' | 'popular'> | null
+        }>
+      }
+      output?: { selectedId: string; selectedName: string }
+    }
+    return (
+      <RouteOptions
+        question={p.input?.question}
+        options={p.input?.options ?? []}
+        state={p.state === 'output-error' ? 'input-available' : p.state}
+        selectedId={p.output?.selectedId}
+        onSelect={(option) => {
+          addToolOutput({
+            tool: 'showRouteOptions',
+            toolCallId: p.toolCallId,
+            output: { selectedId: option.id, selectedName: option.name },
+          })
+        }}
+      />
+    )
+  }
+
+  return null
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+
 function ChatPageInner() {
   const searchParams = useSearchParams()
   const [input, setInput] = useState('')
@@ -39,11 +241,12 @@ function ChatPageInner() {
   const [editText, setEditText] = useState('')
   const didSendStarterRef = useRef(false)
 
-  const { messages, sendMessage, status, setMessages, stop, addToolOutput } = useChat({
-    transport: new DefaultChatTransport({ api: '/api/chat' }),
-    sendAutomaticallyWhen: lastAssistantMessageIsCompleteWithToolCalls,
-    onError: (err) => console.error('[v0] useChat error', err),
-  })
+  const { messages, sendMessage, status, setMessages, stop, addToolOutput } =
+    useChat({
+      transport: new DefaultChatTransport({ api: '/api/chat' }),
+      sendAutomaticallyWhen: lastAssistantMessageIsCompleteWithToolCalls,
+      onError: (err) => console.error('[chat] useChat error', err),
+    })
 
   useEffect(() => {
     if (didSendStarterRef.current) return
@@ -127,7 +330,10 @@ function ChatPageInner() {
                           onSubmit={submitEdit}
                           className="bg-muted border-border"
                         >
-                          <PromptInputTextarea placeholder="Edit message..." autoFocus />
+                          <PromptInputTextarea
+                            placeholder="Edit message..."
+                            autoFocus
+                          />
                           <PromptInputActions className="justify-end pt-1">
                             <PromptInputAction tooltip="Cancel">
                               <Button
@@ -155,7 +361,9 @@ function ChatPageInner() {
                     ) : (
                       <>
                         <div className="bg-muted rounded-3xl px-4 py-3 text-sm leading-relaxed">
-                          <p className="whitespace-pre-wrap">{getMessageText(message)}</p>
+                          <p className="whitespace-pre-wrap">
+                            {getMessageText(message)}
+                          </p>
                         </div>
                         <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                           <Button
@@ -172,7 +380,6 @@ function ChatPageInner() {
                   </div>
                 ) : (
                   <div className="max-w-[85%] flex flex-col gap-3">
-                    {/* Render each part individually */}
                     {message.parts?.map((part, partIndex) => {
                       if (part.type === 'text') {
                         return (
@@ -180,37 +387,20 @@ function ChatPageInner() {
                             key={partIndex}
                             className="text-sm leading-relaxed text-foreground prose prose-sm max-w-none prose-p:my-1 prose-headings:mt-3 prose-headings:mb-1"
                           >
-                            <span className="whitespace-pre-wrap">{part.text}</span>
+                            <span className="whitespace-pre-wrap">
+                              {part.text}
+                            </span>
                           </div>
                         )
                       }
 
-                      if (part.type === 'tool-askMultipleChoice') {
-                        const toolPart = part as {
-                          type: 'tool-askMultipleChoice'
-                          toolName: string
-                          toolCallId: string
-                          state: 'input-streaming' | 'input-available' | 'output-available' | 'output-error'
-                          input?: { question: string; options: { id: string; label: string }[] }
-                          output?: { selectedId: string; selectedLabel: string }
-                        }
+                      // Render all tool parts via the shared renderer
+                      if (part.type.startsWith('tool-')) {
                         return (
-                          <MultipleChoice
-                            key={toolPart.toolCallId}
-                            question={toolPart.input?.question ?? ''}
-                            options={toolPart.input?.options ?? []}
-                            state={toolPart.state}
-                            selectedId={toolPart.output?.selectedId}
-                            onSelect={(option) => {
-                              addToolOutput({
-                                tool: 'askMultipleChoice',
-                                toolCallId: toolPart.toolCallId,
-                                output: {
-                                  selectedId: option.id,
-                                  selectedLabel: option.label,
-                                },
-                              })
-                            }}
+                          <ToolPartRenderer
+                            key={partIndex}
+                            part={part as NonNullable<ChatMessage['parts']>[number]}
+                            addToolOutput={addToolOutput}
                           />
                         )
                       }
