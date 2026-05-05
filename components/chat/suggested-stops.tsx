@@ -7,7 +7,7 @@ import { RouteStopCategory } from './route-stop'
 import {
   Coffee,
   Utensils,
-  Fuel,
+  Zap,
   Bed,
   ShoppingBag,
   MapPin,
@@ -32,16 +32,16 @@ export interface SuggestedStopsProps {
   onSelect?: (selected: SuggestedStopChip[]) => void
 }
 
-const categoryIcons: Partial<Record<RouteStopCategory, React.ReactNode>> = {
-  food: <Utensils className="h-3 w-3" />,
-  coffee: <Coffee className="h-3 w-3" />,
-  fuel: <Fuel className="h-3 w-3" />,
-  attraction: <Star className="h-3 w-3" />,
-  lodging: <Bed className="h-3 w-3" />,
-  shopping: <ShoppingBag className="h-3 w-3" />,
-  scenic: <TreePine className="h-3 w-3" />,
-  entertainment: <Music className="h-3 w-3" />,
-  default: <MapPin className="h-3 w-3" />,
+const categoryConfig: Partial<Record<RouteStopCategory, { icon: React.ReactNode; selectedBg: string; selectedText: string; selectedBorder: string; idleBg: string; idleText: string; idleBorder: string }>> = {
+  food:          { icon: <Utensils className="h-3 w-3" />,  selectedBg: 'bg-orange-500',  selectedText: 'text-white', selectedBorder: 'border-orange-500',  idleBg: 'bg-orange-50 dark:bg-orange-950/30',  idleText: 'text-orange-700 dark:text-orange-400', idleBorder: 'border-orange-200 dark:border-orange-800' },
+  coffee:        { icon: <Coffee className="h-3 w-3" />,    selectedBg: 'bg-amber-500',   selectedText: 'text-white', selectedBorder: 'border-amber-500',   idleBg: 'bg-amber-50 dark:bg-amber-950/30',    idleText: 'text-amber-700 dark:text-amber-400',  idleBorder: 'border-amber-200 dark:border-amber-800' },
+  fuel:          { icon: <Zap className="h-3 w-3" />,       selectedBg: 'bg-emerald-500', selectedText: 'text-white', selectedBorder: 'border-emerald-500', idleBg: 'bg-emerald-50 dark:bg-emerald-950/30',idleText: 'text-emerald-700 dark:text-emerald-400',idleBorder: 'border-emerald-200 dark:border-emerald-800' },
+  attraction:    { icon: <Star className="h-3 w-3" />,      selectedBg: 'bg-yellow-500',  selectedText: 'text-white', selectedBorder: 'border-yellow-500',  idleBg: 'bg-yellow-50 dark:bg-yellow-950/30',  idleText: 'text-yellow-700 dark:text-yellow-400', idleBorder: 'border-yellow-200 dark:border-yellow-800' },
+  lodging:       { icon: <Bed className="h-3 w-3" />,       selectedBg: 'bg-violet-500',  selectedText: 'text-white', selectedBorder: 'border-violet-500',  idleBg: 'bg-violet-50 dark:bg-violet-950/30',  idleText: 'text-violet-700 dark:text-violet-400', idleBorder: 'border-violet-200 dark:border-violet-800' },
+  shopping:      { icon: <ShoppingBag className="h-3 w-3" />,selectedBg: 'bg-pink-500',   selectedText: 'text-white', selectedBorder: 'border-pink-500',   idleBg: 'bg-pink-50 dark:bg-pink-950/30',      idleText: 'text-pink-700 dark:text-pink-400',    idleBorder: 'border-pink-200 dark:border-pink-800' },
+  scenic:        { icon: <TreePine className="h-3 w-3" />,  selectedBg: 'bg-green-500',   selectedText: 'text-white', selectedBorder: 'border-green-500',  idleBg: 'bg-green-50 dark:bg-green-950/30',    idleText: 'text-green-700 dark:text-green-400',  idleBorder: 'border-green-200 dark:border-green-800' },
+  entertainment: { icon: <Music className="h-3 w-3" />,     selectedBg: 'bg-indigo-500',  selectedText: 'text-white', selectedBorder: 'border-indigo-500', idleBg: 'bg-indigo-50 dark:bg-indigo-950/30',  idleText: 'text-indigo-700 dark:text-indigo-400',idleBorder: 'border-indigo-200 dark:border-indigo-800' },
+  default:       { icon: <MapPin className="h-3 w-3" />,    selectedBg: 'bg-foreground',  selectedText: 'text-background', selectedBorder: 'border-foreground', idleBg: 'bg-background', idleText: 'text-foreground', idleBorder: 'border-border' },
 }
 
 export function SuggestedStops({
@@ -54,37 +54,25 @@ export function SuggestedStops({
 }: SuggestedStopsProps) {
   const [internalSelected, setInternalSelected] = useState<string[]>([])
 
-  // When committed (output-available), use controlled ids exclusively.
-  // Otherwise, prefer internal state so multi-select can stage selections
-  // before the user confirms.
   const isCommitted = state === 'output-available'
-  const selectedIds = isCommitted
-    ? controlledSelectedIds ?? []
-    : internalSelected
+  const selectedIds = isCommitted ? controlledSelectedIds ?? [] : internalSelected
   const isSelectable = state === 'input-available'
 
   const toggle = (chip: SuggestedStopChip) => {
     if (!isSelectable) return
-
     if (multiSelect) {
-      // Stage selections, do not commit yet
       setInternalSelected((prev) =>
         prev.includes(chip.id) ? prev.filter((id) => id !== chip.id) : [...prev, chip.id]
       )
     } else {
-      // Single-select: commit immediately
       setInternalSelected([chip.id])
-      if (onSelect) {
-        onSelect([chip])
-      }
+      onSelect?.([chip])
     }
   }
 
   const confirm = () => {
     if (!isSelectable || internalSelected.length === 0) return
-    if (onSelect) {
-      onSelect(chips.filter((c) => internalSelected.includes(c.id)))
-    }
+    onSelect?.(chips.filter((c) => internalSelected.includes(c.id)))
   }
 
   if (state === 'input-streaming') {
@@ -92,12 +80,8 @@ export function SuggestedStops({
       <div className="flex flex-col gap-2 max-w-lg">
         <div className="h-3 w-28 bg-muted rounded animate-pulse" />
         <div className="flex flex-wrap gap-2">
-          {[80, 100, 70, 90, 60].map((w, i) => (
-            <div
-              key={i}
-              className="h-8 rounded-full bg-muted animate-pulse"
-              style={{ width: w }}
-            />
+          {[80, 100, 70, 90, 60, 110].map((w, i) => (
+            <div key={i} className="h-8 rounded-full bg-muted animate-pulse" style={{ width: w }} />
           ))}
         </div>
       </div>
@@ -110,15 +94,21 @@ export function SuggestedStops({
       <div className="flex flex-col gap-1.5">
         <p className="text-xs font-medium text-muted-foreground">{title}</p>
         <div className="flex flex-wrap gap-1.5">
-          {selected.map((chip) => (
-            <span
-              key={chip.id}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium bg-foreground text-background"
-            >
-              <Check className="h-3 w-3" />
-              {chip.label}
-            </span>
-          ))}
+          {selected.map((chip) => {
+            const cfg = categoryConfig[chip.category ?? 'default'] ?? categoryConfig.default!
+            return (
+              <span
+                key={chip.id}
+                className={cn(
+                  'inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold border',
+                  cfg.selectedBg, cfg.selectedText, cfg.selectedBorder
+                )}
+              >
+                {cfg.icon}
+                {chip.label}
+              </span>
+            )
+          })}
         </div>
       </div>
     )
@@ -126,13 +116,11 @@ export function SuggestedStops({
 
   return (
     <div className="flex flex-col gap-3 max-w-lg">
-      {title && (
-        <p className="text-sm font-medium text-foreground text-balance">{title}</p>
-      )}
+      {title && <p className="text-sm font-semibold text-foreground text-balance">{title}</p>}
       <div className="flex flex-wrap gap-2">
         {chips.map((chip) => {
           const isSelected = selectedIds.includes(chip.id)
-          const icon = chip.category ? categoryIcons[chip.category] : null
+          const cfg = categoryConfig[chip.category ?? 'default'] ?? categoryConfig.default!
 
           return (
             <button
@@ -140,24 +128,18 @@ export function SuggestedStops({
               onClick={() => toggle(chip)}
               disabled={!isSelectable}
               className={cn(
-                'inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium border transition-all',
+                'inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold border transition-all',
                 isSelected
-                  ? 'bg-foreground text-background border-foreground'
-                  : 'bg-background text-foreground border-border hover:border-foreground/30 hover:bg-muted/50',
+                  ? cn(cfg.selectedBg, cfg.selectedText, cfg.selectedBorder)
+                  : cn(cfg.idleBg, cfg.idleText, cfg.idleBorder, isSelectable && 'hover:opacity-80'),
                 !isSelectable && 'opacity-50 cursor-default',
-                isSelectable && 'cursor-pointer active:scale-[0.97]'
+                isSelectable && 'cursor-pointer active:scale-[0.96]'
               )}
             >
-              {icon && (
-                <span className={cn(isSelected ? 'text-background' : 'text-muted-foreground')}>
-                  {icon}
-                </span>
-              )}
+              {cfg.icon}
               {chip.label}
               {chip.sublabel && (
-                <span className={cn('opacity-60', isSelected ? 'text-background' : 'text-muted-foreground')}>
-                  {chip.sublabel}
-                </span>
+                <span className="opacity-60 font-normal">{chip.sublabel}</span>
               )}
             </button>
           )
@@ -169,10 +151,10 @@ export function SuggestedStops({
             onClick={confirm}
             disabled={internalSelected.length === 0}
             className={cn(
-              'inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full text-xs font-semibold transition-all',
+              'inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full text-xs font-semibold border transition-all',
               internalSelected.length > 0
-                ? 'bg-foreground text-background hover:bg-foreground/90 cursor-pointer'
-                : 'bg-muted text-muted-foreground cursor-not-allowed'
+                ? 'bg-foreground text-background border-foreground hover:bg-foreground/90 cursor-pointer'
+                : 'bg-muted text-muted-foreground border-border cursor-not-allowed'
             )}
           >
             <Check className="h-3 w-3" />

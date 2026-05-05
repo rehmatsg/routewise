@@ -1,8 +1,7 @@
 'use client'
 
-import { Clock, Navigation, Leaf, Zap, Star } from 'lucide-react'
+import { Clock, Navigation, Leaf, Zap, Star, Check, TrendingUp } from 'lucide-react'
 import { cn } from '@/lib/utils'
-import { Check } from 'lucide-react'
 
 export interface RouteOption {
   id: string
@@ -23,11 +22,19 @@ export interface RouteOptionsProps {
 }
 
 const tagConfig = {
-  scenic: { label: 'Scenic', icon: <Star className="h-3 w-3" />, className: 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400' },
-  fast: { label: 'Fastest', icon: <Zap className="h-3 w-3" />, className: 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400' },
-  eco: { label: 'Eco', icon: <Leaf className="h-3 w-3" />, className: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400' },
-  popular: { label: 'Popular', icon: <Star className="h-3 w-3" />, className: 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400' },
+  scenic:  { label: 'Scenic',   icon: <Star className="h-3 w-3" />,     bg: 'bg-green-100 dark:bg-green-900/40',   text: 'text-green-700 dark:text-green-400',   border: 'border-green-200 dark:border-green-800' },
+  fast:    { label: 'Fastest',  icon: <Zap className="h-3 w-3" />,      bg: 'bg-sky-100 dark:bg-sky-900/40',       text: 'text-sky-700 dark:text-sky-400',       border: 'border-sky-200 dark:border-sky-800' },
+  eco:     { label: 'Eco',      icon: <Leaf className="h-3 w-3" />,     bg: 'bg-emerald-100 dark:bg-emerald-900/40', text: 'text-emerald-700 dark:text-emerald-400', border: 'border-emerald-200 dark:border-emerald-800' },
+  popular: { label: 'Popular',  icon: <TrendingUp className="h-3 w-3" />, bg: 'bg-amber-100 dark:bg-amber-900/40', text: 'text-amber-700 dark:text-amber-400',   border: 'border-amber-200 dark:border-amber-800' },
 }
+
+// A left-border accent color per option index to differentiate routes visually
+const optionAccents = [
+  { bar: 'bg-sky-500',    selectedBorder: 'border-sky-400',    selectedBg: 'bg-sky-50 dark:bg-sky-950/40' },
+  { bar: 'bg-violet-500', selectedBorder: 'border-violet-400', selectedBg: 'bg-violet-50 dark:bg-violet-950/40' },
+  { bar: 'bg-amber-500',  selectedBorder: 'border-amber-400',  selectedBg: 'bg-amber-50 dark:bg-amber-950/40' },
+  { bar: 'bg-emerald-500',selectedBorder: 'border-emerald-400',selectedBg: 'bg-emerald-50 dark:bg-emerald-950/40' },
+]
 
 export function RouteOptions({
   question = 'Which route do you prefer?',
@@ -41,7 +48,7 @@ export function RouteOptions({
 
   if (state === 'input-streaming') {
     return (
-      <div className="flex flex-col gap-3 max-w-sm w-full">
+      <div className="flex flex-col gap-3 w-full">
         <div className="h-4 w-48 bg-muted rounded animate-pulse" />
         {[1, 2].map((i) => (
           <div key={i} className="rounded-xl border border-border bg-card p-4 animate-pulse">
@@ -58,21 +65,26 @@ export function RouteOptions({
   }
 
   if (state === 'output-available' && selectedOption) {
+    const accent = optionAccents[options.indexOf(selectedOption) % optionAccents.length]
     return (
-      <div className="flex items-center gap-2 px-3 py-2 rounded-lg border border-border bg-muted/50 text-sm max-w-md">
-        <Check className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
-        <span className="text-muted-foreground">{question}</span>
-        <span className="text-foreground font-medium">&mdash; {selectedOption.name}</span>
+      <div className="flex items-center gap-2.5 px-3 py-2.5 rounded-xl border border-border bg-muted/40 text-sm max-w-md">
+        <div className={cn('h-4 w-0.5 rounded-full shrink-0', accent.bar)} />
+        <span className="text-muted-foreground">Route chosen:</span>
+        <span className="text-foreground font-semibold">{selectedOption.name}</span>
+        <div className="ml-auto h-5 w-5 rounded-full bg-foreground flex items-center justify-center shrink-0">
+          <Check className="h-3 w-3 text-background" />
+        </div>
       </div>
     )
   }
 
   return (
-    <div className="flex flex-col gap-3 max-w-sm w-full">
-      <p className="text-sm font-medium text-foreground">{question}</p>
-      <div className="flex flex-col gap-2">
-        {options.map((option) => {
+    <div className="flex flex-col gap-3 w-full">
+      <p className="text-sm font-semibold text-foreground">{question}</p>
+      <div className="flex flex-col gap-2.5">
+        {options.map((option, idx) => {
           const isSelected = option.id === selectedId
+          const accent = optionAccents[idx % optionAccents.length]
 
           return (
             <button
@@ -80,70 +92,75 @@ export function RouteOptions({
               onClick={() => isSelectable && onSelect?.(option)}
               disabled={!isSelectable}
               className={cn(
-                'flex flex-col gap-2 p-4 rounded-xl border text-left transition-all w-full',
+                'flex gap-0 p-0 rounded-xl border text-left transition-all w-full overflow-hidden',
                 isSelected
-                  ? 'border-foreground bg-foreground/5'
-                  : 'border-border bg-card hover:border-foreground/30 hover:bg-muted/30',
-                !isSelectable && 'opacity-50 cursor-default',
+                  ? cn('border-2', accent.selectedBorder, accent.selectedBg)
+                  : 'border-border bg-card hover:bg-muted/30 hover:border-foreground/20',
+                !isSelectable && 'opacity-60 cursor-default',
                 isSelectable && 'cursor-pointer'
               )}
             >
-              <div className="flex items-center justify-between">
-                <p className="text-sm font-semibold text-foreground">{option.name}</p>
-                {isSelected && (
-                  <div className="h-5 w-5 rounded-full bg-foreground flex items-center justify-center shrink-0">
-                    <Check className="h-3 w-3 text-background" />
+              {/* Left accent bar */}
+              <div className={cn('w-1 shrink-0 self-stretch', accent.bar)} />
+
+              <div className="flex flex-col gap-2 p-4 flex-1 min-w-0">
+                {/* Name + check */}
+                <div className="flex items-center justify-between gap-2">
+                  <p className="text-sm font-bold text-foreground">{option.name}</p>
+                  {isSelected && (
+                    <div className="h-5 w-5 rounded-full bg-foreground flex items-center justify-center shrink-0">
+                      <Check className="h-3 w-3 text-background" />
+                    </div>
+                  )}
+                </div>
+
+                {option.description && (
+                  <p className="text-xs text-muted-foreground leading-relaxed">{option.description}</p>
+                )}
+
+                {/* Distance + duration */}
+                <div className="flex items-center gap-4">
+                  {option.distance && (
+                    <span className="text-xs font-medium text-foreground flex items-center gap-1">
+                      <Navigation className="h-3 w-3 text-muted-foreground" />
+                      {option.distance}
+                    </span>
+                  )}
+                  {option.duration && (
+                    <span className="text-xs font-medium text-foreground flex items-center gap-1">
+                      <Clock className="h-3 w-3 text-muted-foreground" />
+                      {option.duration}
+                    </span>
+                  )}
+                </div>
+
+                {option.highlights && option.highlights.length > 0 && (
+                  <p className="text-xs text-muted-foreground">
+                    {option.highlights.join(' · ')}
+                  </p>
+                )}
+
+                {option.tags && option.tags.length > 0 && (
+                  <div className="flex flex-wrap gap-1.5">
+                    {option.tags.map((tag) => {
+                      const cfg = tagConfig[tag]
+                      if (!cfg) return null
+                      return (
+                        <span
+                          key={tag}
+                          className={cn(
+                            'inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold border',
+                            cfg.bg, cfg.text, cfg.border
+                          )}
+                        >
+                          {cfg.icon}
+                          {cfg.label}
+                        </span>
+                      )
+                    })}
                   </div>
                 )}
               </div>
-
-              {option.description && (
-                <p className="text-xs text-muted-foreground leading-relaxed">
-                  {option.description}
-                </p>
-              )}
-
-              <div className="flex items-center gap-3">
-                {option.distance && (
-                  <span className="text-xs text-muted-foreground flex items-center gap-1">
-                    <Navigation className="h-3 w-3" />
-                    {option.distance}
-                  </span>
-                )}
-                {option.duration && (
-                  <span className="text-xs text-muted-foreground flex items-center gap-1">
-                    <Clock className="h-3 w-3" />
-                    {option.duration}
-                  </span>
-                )}
-              </div>
-
-              {option.highlights && option.highlights.length > 0 && (
-                <p className="text-xs text-muted-foreground">
-                  Highlights: {option.highlights.join(' · ')}
-                </p>
-              )}
-
-              {option.tags && option.tags.length > 0 && (
-                <div className="flex flex-wrap gap-1.5">
-                  {option.tags.map((tag) => {
-                    const config = tagConfig[tag]
-                    if (!config) return null
-                    return (
-                      <span
-                        key={tag}
-                        className={cn(
-                          'inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold',
-                          config.className
-                        )}
-                      >
-                        {config.icon}
-                        {config.label}
-                      </span>
-                    )
-                  })}
-                </div>
-              )}
             </button>
           )
         })}
