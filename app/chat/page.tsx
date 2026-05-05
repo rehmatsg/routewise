@@ -113,6 +113,8 @@ function ToolPartRenderer({
         totalDistance?: string | null
         totalDuration?: string | null
         approximateEta?: string | null
+        vehicleModel?: string | null
+        routeTag?: string | null
       }
     }
     return (
@@ -123,6 +125,8 @@ function ToolPartRenderer({
         totalDistance={p.input?.totalDistance}
         totalDuration={p.input?.totalDuration}
         approximateEta={p.input?.approximateEta}
+        vehicleModel={p.input?.vehicleModel}
+        routeTag={p.input?.routeTag}
         state={p.state === 'output-error' ? 'input-available' : p.state}
       />
     )
@@ -232,7 +236,7 @@ function ToolPartRenderer({
   return null
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
+// ─────────────────────────────────────────────────���───────────────────────────
 
 function ChatPageInner() {
   const searchParams = useSearchParams()
@@ -379,7 +383,7 @@ function ChatPageInner() {
                     )}
                   </div>
                 ) : (
-                  <div className="max-w-[85%] flex flex-col gap-3">
+                  <div className="w-full flex flex-col gap-3">
                     {message.parts?.map((part, partIndex) => {
                       if (part.type === 'text') {
                         return (

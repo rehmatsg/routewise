@@ -1,17 +1,8 @@
 'use client'
 
-import { Clock, Navigation, MapPin, Flag, Zap } from 'lucide-react'
+import { Clock, Navigation, Zap, Coffee, Utensils, Bed, ShoppingBag, Star, TreePine, Music, MapPin } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { RouteStopCategory } from './route-stop'
-import {
-  Coffee,
-  Utensils,
-  Bed,
-  ShoppingBag,
-  Star,
-  TreePine,
-  Music,
-} from 'lucide-react'
 
 export interface RouteSummaryStop {
   name: string
@@ -27,22 +18,66 @@ export interface RouteSummaryProps {
   totalDistance?: string | null
   totalDuration?: string | null
   approximateEta?: string | null
+  vehicleModel?: string | null
+  routeTag?: string | null
   state?: 'input-streaming' | 'input-available' | 'output-available'
 }
 
 const stopCategoryConfig: Partial<
-  Record<RouteStopCategory, { icon: React.ReactNode; label: string }>
+  Record<RouteStopCategory, { icon: React.ReactNode; bg: string; border: string }>
 > = {
-  food: { icon: <Utensils className="h-3.5 w-3.5" />, label: 'Food' },
-  coffee: { icon: <Coffee className="h-3.5 w-3.5" />, label: 'Coffee' },
-  fuel: { icon: <Zap className="h-3.5 w-3.5" />, label: 'Charging' },
-  attraction: { icon: <Star className="h-3.5 w-3.5" />, label: 'Attraction' },
-  lodging: { icon: <Bed className="h-3.5 w-3.5" />, label: 'Lodging' },
-  shopping: { icon: <ShoppingBag className="h-3.5 w-3.5" />, label: 'Shopping' },
-  scenic: { icon: <TreePine className="h-3.5 w-3.5" />, label: 'Scenic' },
-  entertainment: { icon: <Music className="h-3.5 w-3.5" />, label: 'Entertainment' },
-  default: { icon: <MapPin className="h-3.5 w-3.5" />, label: 'Stop' },
+  food: {
+    icon: <Utensils className="h-4 w-4" />,
+    bg: 'bg-orange-50 dark:bg-orange-950',
+    border: 'border-orange-200 dark:border-orange-800',
+  },
+  coffee: {
+    icon: <Coffee className="h-4 w-4" />,
+    bg: 'bg-amber-50 dark:bg-amber-950',
+    border: 'border-amber-200 dark:border-amber-800',
+  },
+  fuel: {
+    icon: <Zap className="h-4 w-4" />,
+    bg: 'bg-yellow-50 dark:bg-yellow-950',
+    border: 'border-yellow-200 dark:border-yellow-800',
+  },
+  attraction: {
+    icon: <Star className="h-4 w-4" />,
+    bg: 'bg-purple-50 dark:bg-purple-950',
+    border: 'border-purple-200 dark:border-purple-800',
+  },
+  lodging: {
+    icon: <Bed className="h-4 w-4" />,
+    bg: 'bg-blue-50 dark:bg-blue-950',
+    border: 'border-blue-200 dark:border-blue-800',
+  },
+  shopping: {
+    icon: <ShoppingBag className="h-4 w-4" />,
+    bg: 'bg-pink-50 dark:bg-pink-950',
+    border: 'border-pink-200 dark:border-pink-800',
+  },
+  scenic: {
+    icon: <TreePine className="h-4 w-4" />,
+    bg: 'bg-green-50 dark:bg-green-950',
+    border: 'border-green-200 dark:border-green-800',
+  },
+  entertainment: {
+    icon: <Music className="h-4 w-4" />,
+    bg: 'bg-indigo-50 dark:bg-indigo-950',
+    border: 'border-indigo-200 dark:border-indigo-800',
+  },
+  default: {
+    icon: <MapPin className="h-4 w-4" />,
+    bg: 'bg-muted',
+    border: 'border-border',
+  },
 }
+
+const CONDITION_CHIPS = [
+  { label: 'Optimal Temp', color: 'text-blue-600 dark:text-blue-400', dot: 'bg-blue-500' },
+  { label: 'Low Traffic', color: 'text-amber-600 dark:text-amber-400', dot: 'bg-amber-500' },
+  { label: 'No Delays', color: 'text-indigo-600 dark:text-indigo-400', dot: 'bg-indigo-500' },
+]
 
 export function RouteSummary({
   origin,
@@ -51,202 +86,162 @@ export function RouteSummary({
   totalDistance,
   totalDuration,
   approximateEta,
+  vehicleModel,
+  routeTag = 'Fastest Route',
   state = 'input-available',
 }: RouteSummaryProps) {
   if (state === 'input-streaming') {
     return (
-      <div className="rounded-2xl border border-border bg-card overflow-hidden max-w-md w-full animate-pulse">
-        <div className="h-20 bg-muted" />
-        <div className="p-5 flex flex-col gap-3">
-          <div className="h-3 w-24 bg-muted rounded" />
-          <div className="h-3 w-32 bg-muted rounded" />
-          <div className="h-3 w-28 bg-muted rounded" />
-          <div className="h-3 w-20 bg-muted rounded" />
+      <div className="rounded-2xl border border-border bg-card w-full animate-pulse p-6 flex flex-col gap-4">
+        <div className="flex justify-between items-start">
+          <div className="h-14 w-14 rounded-full bg-muted" />
+          <div className="h-6 w-28 rounded-full bg-muted" />
+        </div>
+        <div className="h-5 w-40 bg-muted rounded" />
+        <div className="h-3 w-52 bg-muted rounded" />
+        <div className="h-3 w-full bg-muted rounded-full mt-4" />
+        <div className="grid grid-cols-3 gap-4 mt-2">
+          <div className="h-12 bg-muted rounded-xl" />
+          <div className="h-12 bg-muted rounded-xl" />
+          <div className="h-12 bg-muted rounded-xl" />
         </div>
       </div>
     )
   }
 
+  // Build the horizontal route bar nodes: origin dot, stop icons, destination dot
+  const stopNodes = stops.map((stop) => {
+    const config = stopCategoryConfig[stop.category ?? 'default'] ?? stopCategoryConfig.default!
+    return config
+  })
+
+  const tripLabel = `${origin} to ${destination}`
+
   return (
-    <div className="rounded-2xl border border-border bg-card overflow-hidden max-w-md w-full shadow-sm">
-      {/* Hero header */}
-      <div className="bg-foreground text-background px-5 py-4">
-        <p className="text-[10px] uppercase tracking-widest text-background/60 font-semibold mb-2">
-          Your EV Trip
-        </p>
-        <div className="flex items-center gap-2.5">
-          <div className="flex flex-col items-center pt-1">
-            <div className="h-2 w-2 rounded-full bg-background ring-2 ring-background/30" />
-            <div className="w-px flex-1 bg-background/30 my-1 min-h-[14px]" />
-            <Flag className="h-3 w-3 text-background fill-background" />
+    <div className="rounded-2xl border border-border bg-card w-full shadow-sm overflow-hidden">
+      <div className="p-6 flex flex-col gap-5">
+
+        {/* Top row: EV icon + route tag badge */}
+        <div className="flex items-start justify-between">
+          {/* Circular EV icon */}
+          <div className="relative">
+            <div className="h-14 w-14 rounded-full bg-muted flex items-center justify-center border border-border">
+              <Zap className="h-6 w-6 text-foreground" strokeWidth={2.5} />
+            </div>
+            {/* Small clock overlay */}
+            <div className="absolute -bottom-1 -right-1 h-5 w-5 rounded-full bg-background border border-border flex items-center justify-center">
+              <Clock className="h-2.5 w-2.5 text-muted-foreground" />
+            </div>
           </div>
-          <div className="flex flex-col gap-1.5 min-w-0 flex-1">
-            <p className="text-base font-semibold leading-tight truncate">{origin}</p>
-            <p className="text-base font-semibold leading-tight truncate text-background/90">
-              {destination}
+
+          {/* Route tag */}
+          {routeTag && (
+            <span className="inline-flex items-center rounded-full bg-green-100 dark:bg-green-900 px-3 py-1 text-xs font-semibold text-green-700 dark:text-green-300 border border-green-200 dark:border-green-800">
+              {routeTag}
+            </span>
+          )}
+        </div>
+
+        {/* Title + subtitle */}
+        <div>
+          <h2 className="text-xl font-bold text-foreground leading-tight text-balance">
+            {tripLabel}
+          </h2>
+          {vehicleModel && (
+            <p className="text-sm text-muted-foreground mt-0.5">
+              Optimized for {vehicleModel}
             </p>
+          )}
+        </div>
+
+        {/* Horizontal route bar */}
+        <div className="flex flex-col gap-1.5">
+          {/* Origin / Destination labels */}
+          <div className="flex justify-between text-xs text-muted-foreground">
+            <span>{origin}</span>
+            <span>{destination}</span>
           </div>
-        </div>
-      </div>
 
-      {/* Stat strip */}
-      {(totalDistance || totalDuration || approximateEta) && (
-        <div className="grid grid-cols-3 divide-x divide-border border-b border-border bg-muted/30">
-          {totalDistance && (
-            <div className="flex flex-col items-center justify-center px-3 py-3 gap-0.5">
-              <Navigation className="h-3.5 w-3.5 text-muted-foreground" />
-              <span className="text-sm font-semibold text-foreground leading-tight">
-                {totalDistance}
-              </span>
-              <span className="text-[10px] uppercase tracking-wider text-muted-foreground">
-                Distance
-              </span>
+          {/* Bar with stop icons */}
+          <div className="relative flex items-center gap-0">
+            {/* Full-width track */}
+            <div className="absolute inset-y-1/2 left-0 right-0 h-[3px] -translate-y-1/2 rounded-full overflow-hidden">
+              {/* Green filled portion */}
+              <div className="h-full w-1/3 bg-green-500 rounded-l-full" />
             </div>
-          )}
-          {totalDuration && (
-            <div className="flex flex-col items-center justify-center px-3 py-3 gap-0.5">
-              <Clock className="h-3.5 w-3.5 text-muted-foreground" />
-              <span className="text-sm font-semibold text-foreground leading-tight">
-                {totalDuration}
-              </span>
-              <span className="text-[10px] uppercase tracking-wider text-muted-foreground">
-                Drive Time
-              </span>
-            </div>
-          )}
+            {/* Track remainder */}
+            <div className="absolute inset-y-1/2 left-1/3 right-0 h-[3px] -translate-y-1/2 bg-border rounded-r-full" />
+
+            {/* Origin dot */}
+            <div className="relative z-10 h-3 w-3 rounded-full bg-foreground shrink-0" />
+
+            {/* Stop icons evenly spaced */}
+            {stopNodes.length > 0 && (
+              <div className="flex-1 flex items-center justify-evenly px-2 relative z-10">
+                {stopNodes.map((config, i) => (
+                  <div
+                    key={i}
+                    className={cn(
+                      'h-8 w-8 rounded-full border flex items-center justify-center text-foreground shrink-0',
+                      config.bg,
+                      config.border
+                    )}
+                  >
+                    {config.icon}
+                  </div>
+                ))}
+              </div>
+            )}
+            {stopNodes.length === 0 && <div className="flex-1" />}
+
+            {/* Destination dot */}
+            <div className="relative z-10 h-3 w-3 rounded-full bg-foreground shrink-0" />
+          </div>
+
+          {/* Arriving in */}
           {approximateEta && (
-            <div className="flex flex-col items-center justify-center px-3 py-3 gap-0.5">
-              <Flag className="h-3.5 w-3.5 text-muted-foreground" />
-              <span className="text-sm font-semibold text-foreground leading-tight">
-                {approximateEta}
-              </span>
-              <span className="text-[10px] uppercase tracking-wider text-muted-foreground">
-                ETA
-              </span>
-            </div>
+            <p className="text-center text-sm font-semibold text-green-600 dark:text-green-400 mt-1">
+              Arriving in {approximateEta}
+            </p>
           )}
         </div>
-      )}
 
-      {/* Timeline */}
-      <div className="p-5">
-        <p className="text-[10px] uppercase tracking-widest text-muted-foreground font-semibold mb-4">
-          Itinerary
-        </p>
-        <div className="flex flex-col">
-          {/* Origin */}
-          <TimelineRow
-            kind="origin"
-            label={origin}
-            sublabel="Start"
-            isLast={false}
-          />
+        {/* Stats row */}
+        {(totalDistance || totalDuration || stops.length > 0) && (
+          <div className="grid grid-cols-3 gap-3">
+            {totalDistance && (
+              <StatBlock value={totalDistance} label="Total Distance" />
+            )}
+            {totalDuration && (
+              <StatBlock value={totalDuration} label="Total Travel Time" />
+            )}
+            <StatBlock value={`${stops.length} Stop${stops.length !== 1 ? 's' : ''}`} label="Scheduled" />
+          </div>
+        )}
 
-          {/* Stops */}
-          {stops.map((stop, index) => {
-            const config =
-              stopCategoryConfig[stop.category ?? 'default'] ??
-              stopCategoryConfig.default!
-            return (
-              <TimelineRow
-                key={index}
-                kind="stop"
-                label={stop.name}
-                sublabel={stop.location}
-                durationFromPrev={stop.durationFromPrev}
-                icon={config.icon}
-                categoryLabel={config.label}
-                isLast={false}
-              />
-            )
-          })}
-
-          {/* Destination */}
-          <TimelineRow
-            kind="destination"
-            label={destination}
-            sublabel="Arrive"
-            isLast
-          />
+        {/* Condition chips */}
+        <div className="flex flex-wrap gap-2">
+          {CONDITION_CHIPS.map((chip) => (
+            <span
+              key={chip.label}
+              className="inline-flex items-center gap-1.5 rounded-full border border-border bg-muted/50 px-3 py-1.5 text-xs font-medium text-foreground"
+            >
+              <span className={cn('h-1.5 w-1.5 rounded-full shrink-0', chip.dot)} />
+              <span className={chip.color}>{chip.label}</span>
+            </span>
+          ))}
         </div>
+
       </div>
     </div>
   )
 }
 
-interface TimelineRowProps {
-  kind: 'origin' | 'stop' | 'destination'
-  label: string
-  sublabel?: string
-  durationFromPrev?: string | null
-  icon?: React.ReactNode
-  categoryLabel?: string
-  isLast: boolean
-}
-
-function TimelineRow({
-  kind,
-  label,
-  sublabel,
-  durationFromPrev,
-  icon,
-  categoryLabel,
-  isLast,
-}: TimelineRowProps) {
-  const isEndpoint = kind === 'origin' || kind === 'destination'
-
+function StatBlock({ value, label }: { value: string; label: string }) {
   return (
-    <div className="flex gap-3 group">
-      {/* Timeline column */}
-      <div className="flex flex-col items-center w-7 shrink-0">
-        {/* Marker */}
-        {isEndpoint ? (
-          <div className="h-7 w-7 rounded-full bg-foreground flex items-center justify-center shrink-0">
-            {kind === 'origin' ? (
-              <div className="h-2 w-2 rounded-full bg-background" />
-            ) : (
-              <Flag className="h-3 w-3 text-background fill-background" />
-            )}
-          </div>
-        ) : (
-          <div className="h-7 w-7 rounded-full bg-background border-2 border-border flex items-center justify-center shrink-0 text-muted-foreground">
-            {icon}
-          </div>
-        )}
-
-        {/* Connector */}
-        {!isLast && (
-          <div className="w-px flex-1 bg-border mt-1 mb-1 min-h-[24px]" />
-        )}
-      </div>
-
-      {/* Content */}
-      <div className={cn('flex flex-col min-w-0 flex-1', isLast ? 'pb-0' : 'pb-5')}>
-        {durationFromPrev && (
-          <span className="inline-flex items-center gap-1 text-[10px] text-muted-foreground mb-1">
-            <Clock className="h-2.5 w-2.5" />
-            {durationFromPrev}
-          </span>
-        )}
-        <div className="flex items-baseline gap-2 flex-wrap">
-          <p
-            className={cn(
-              'text-sm leading-tight truncate',
-              isEndpoint ? 'font-semibold text-foreground' : 'font-medium text-foreground'
-            )}
-          >
-            {label}
-          </p>
-          {categoryLabel && !isEndpoint && (
-            <span className="text-[10px] uppercase tracking-wider text-muted-foreground">
-              {categoryLabel}
-            </span>
-          )}
-        </div>
-        {sublabel && (
-          <p className="text-xs text-muted-foreground mt-0.5 truncate">{sublabel}</p>
-        )}
-      </div>
+    <div className="flex flex-col items-center justify-center rounded-xl bg-muted/50 border border-border px-3 py-3 gap-0.5 text-center">
+      <span className="text-base font-bold text-foreground leading-tight">{value}</span>
+      <span className="text-[10px] text-muted-foreground leading-tight">{label}</span>
     </div>
   )
 }

@@ -72,6 +72,8 @@ const showRouteSummaryTool = tool({
     totalDistance: z.string().nullable().describe('Total distance (e.g. "381 miles")'),
     totalDuration: z.string().nullable().describe('Total drive time (e.g. "5h 45min")'),
     approximateEta: z.string().nullable().describe('Estimated arrival time (e.g. "3:30 PM")'),
+    vehicleModel: z.string().nullable().describe('EV model if known (e.g. "Tesla Model 3", "Rivian R1T")'),
+    routeTag: z.string().nullable().describe('Short route descriptor badge (e.g. "Fastest Route", "Scenic Route", "EV-Optimized")'),
   }),
 })
 
@@ -189,7 +191,7 @@ Use to display a curated list of specific recommended stops (real restaurants, c
 Use proactively for any trip over ~150 miles. Show 2-4 strategically-placed charging stations along the route. Include real charger networks (Tesla Supercharger, Electrify America, EVgo, ChargePoint), realistic kW speeds, port counts, and nearby amenities (cafes, shops, restrooms).
 
 ### showRouteSummary
-The "final plan" view with origin → stops → destination timeline. Call this AFTER preferences are collected — do not wait for confirmation. Include: origin, destination, intermediate stops (mix of charging stops and points of interest), totalDistance, totalDuration, and approximateEta. For charging stops, use category 'fuel' (which renders as Charging in the UI).
+The "final plan" view with origin → stops → destination timeline. Call this AFTER preferences are collected — do not wait for confirmation. Include: origin, destination, intermediate stops (mix of charging stops and points of interest), totalDistance, totalDuration, approximateEta. If the user has mentioned their EV model, pass it as vehicleModel. Always pass a routeTag (e.g. "Fastest Route", "Scenic Route", "EV-Optimized"). For charging stops, use category 'fuel' (which renders as Charging in the UI).
 
 ## Style Tips
 - Be conversational, warm, and enthusiastic.
