@@ -8,7 +8,6 @@ import {
   Coffee,
   Utensils,
   Fuel,
-  Camera,
   Bed,
   ShoppingBag,
   MapPin,
@@ -55,33 +54,42 @@ export function SuggestedStops({
 }: SuggestedStopsProps) {
   const [internalSelected, setInternalSelected] = useState<string[]>([])
 
-  const selectedIds = controlledSelectedIds ?? internalSelected
+  // When committed (output-available), use controlled ids exclusively.
+  // Otherwise, prefer internal state so multi-select can stage selections
+  // before the user confirms.
+  const isCommitted = state === 'output-available'
+  const selectedIds = isCommitted
+    ? controlledSelectedIds ?? []
+    : internalSelected
   const isSelectable = state === 'input-available'
 
   const toggle = (chip: SuggestedStopChip) => {
     if (!isSelectable) return
 
-    let next: string[]
     if (multiSelect) {
-      next = selectedIds.includes(chip.id)
-        ? selectedIds.filter((id) => id !== chip.id)
-        : [...selectedIds, chip.id]
+      // Stage selections, do not commit yet
+      setInternalSelected((prev) =>
+        prev.includes(chip.id) ? prev.filter((id) => id !== chip.id) : [...prev, chip.id]
+      )
     } else {
-      next = selectedIds.includes(chip.id) ? [] : [chip.id]
+      // Single-select: commit immediately
+      setInternalSelected([chip.id])
+      if (onSelect) {
+        onSelect([chip])
+      }
     }
+  }
 
-    if (!controlledSelectedIds) {
-      setInternalSelected(next)
-    }
-
+  const confirm = () => {
+    if (!isSelectable || internalSelected.length === 0) return
     if (onSelect) {
-      onSelect(chips.filter((c) => next.includes(c.id)))
+      onSelect(chips.filter((c) => internalSelected.includes(c.id)))
     }
   }
 
   if (state === 'input-streaming') {
     return (
-      <div className="flex flex-col gap-2 max-w-sm">
+      <div className="flex flex-col gap-2 max-w-lg">
         <div className="h-3 w-28 bg-muted rounded animate-pulse" />
         <div className="flex flex-wrap gap-2">
           {[80, 100, 70, 90, 60].map((w, i) => (
@@ -96,12 +104,12 @@ export function SuggestedStops({
     )
   }
 
-  if (state === 'output-available' && selectedIds.length > 0) {
+  if (isCommitted && selectedIds.length > 0) {
     const selected = chips.filter((c) => selectedIds.includes(c.id))
     return (
       <div className="flex flex-col gap-1.5">
-        <p className="text-xs text-muted-foreground">{title}</p>
-        <div className="flex flex-wrap gap-2">
+        <p className="text-xs font-medium text-muted-foreground">{title}</p>
+        <div className="flex flex-wrap gap-1.5">
           {selected.map((chip) => (
             <span
               key={chip.id}
@@ -117,11 +125,9 @@ export function SuggestedStops({
   }
 
   return (
-    <div className="flex flex-col gap-2 max-w-lg">
+    <div className="flex flex-col gap-3 max-w-lg">
       {title && (
-        <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
-          {title}
-        </p>
+        <p className="text-sm font-medium text-foreground text-balance">{title}</p>
       )}
       <div className="flex flex-wrap gap-2">
         {chips.map((chip) => {
@@ -139,7 +145,7 @@ export function SuggestedStops({
                   ? 'bg-foreground text-background border-foreground'
                   : 'bg-background text-foreground border-border hover:border-foreground/30 hover:bg-muted/50',
                 !isSelectable && 'opacity-50 cursor-default',
-                isSelectable && 'cursor-pointer'
+                isSelectable && 'cursor-pointer active:scale-[0.97]'
               )}
             >
               {icon && (
@@ -157,6 +163,27 @@ export function SuggestedStops({
           )
         })}
       </div>
+      {multiSelect && isSelectable && (
+        <div className="flex items-center gap-2">
+          <button
+            onClick={confirm}
+            disabled={internalSelected.length === 0}
+            className={cn(
+              'inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full text-xs font-semibold transition-all',
+              internalSelected.length > 0
+                ? 'bg-foreground text-background hover:bg-foreground/90 cursor-pointer'
+                : 'bg-muted text-muted-foreground cursor-not-allowed'
+            )}
+          >
+            <Check className="h-3 w-3" />
+            Confirm
+            {internalSelected.length > 0 && (
+              <span className="opacity-70">({internalSelected.length})</span>
+            )}
+          </button>
+          <p className="text-xs text-muted-foreground">Pick as many as you like</p>
+        </div>
+      )}
     </div>
   )
 }
