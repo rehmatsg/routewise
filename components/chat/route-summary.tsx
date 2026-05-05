@@ -1,6 +1,6 @@
 'use client'
 
-import { Clock, Navigation, Zap, Coffee, Utensils, Bed, ShoppingBag, Star, TreePine, Music, MapPin } from 'lucide-react'
+import { Zap, Coffee, Utensils, Bed, ShoppingBag, Star, TreePine, Music, MapPin } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { RouteStopCategory } from './route-stop'
 
@@ -17,7 +17,6 @@ export interface RouteSummaryProps {
   stops?: RouteSummaryStop[]
   totalDistance?: string | null
   totalDuration?: string | null
-  approximateEta?: string | null
   vehicleModel?: string | null
   routeTag?: string | null
   state?: 'input-streaming' | 'input-available' | 'output-available'
@@ -73,11 +72,6 @@ const stopCategoryConfig: Partial<
   },
 }
 
-const CONDITION_CHIPS = [
-  { label: 'Optimal Temp', color: 'text-blue-600 dark:text-blue-400', dot: 'bg-blue-500' },
-  { label: 'Low Traffic', color: 'text-amber-600 dark:text-amber-400', dot: 'bg-amber-500' },
-  { label: 'No Delays', color: 'text-indigo-600 dark:text-indigo-400', dot: 'bg-indigo-500' },
-]
 
 export function RouteSummary({
   origin,
@@ -85,7 +79,6 @@ export function RouteSummary({
   stops = [],
   totalDistance,
   totalDuration,
-  approximateEta,
   vehicleModel,
   routeTag = 'Fastest Route',
   state = 'input-available',
@@ -128,10 +121,7 @@ export function RouteSummary({
             <div className="h-14 w-14 rounded-full bg-muted flex items-center justify-center border border-border">
               <Zap className="h-6 w-6 text-foreground" strokeWidth={2.5} />
             </div>
-            {/* Small clock overlay */}
-            <div className="absolute -bottom-1 -right-1 h-5 w-5 rounded-full bg-background border border-border flex items-center justify-center">
-              <Clock className="h-2.5 w-2.5 text-muted-foreground" />
-            </div>
+
           </div>
 
           {/* Route tag */}
@@ -198,12 +188,7 @@ export function RouteSummary({
             <div className="relative z-10 h-3 w-3 rounded-full bg-foreground shrink-0" />
           </div>
 
-          {/* Arriving in */}
-          {approximateEta && (
-            <p className="text-center text-sm font-semibold text-green-600 dark:text-green-400 mt-1">
-              Arriving in {approximateEta}
-            </p>
-          )}
+
         </div>
 
         {/* Stats row */}
@@ -219,18 +204,7 @@ export function RouteSummary({
           </div>
         )}
 
-        {/* Condition chips */}
-        <div className="flex flex-wrap gap-2">
-          {CONDITION_CHIPS.map((chip) => (
-            <span
-              key={chip.label}
-              className="inline-flex items-center gap-1.5 rounded-full border border-border bg-muted/50 px-3 py-1.5 text-xs font-medium text-foreground"
-            >
-              <span className={cn('h-1.5 w-1.5 rounded-full shrink-0', chip.dot)} />
-              <span className={chip.color}>{chip.label}</span>
-            </span>
-          ))}
-        </div>
+
 
       </div>
     </div>
